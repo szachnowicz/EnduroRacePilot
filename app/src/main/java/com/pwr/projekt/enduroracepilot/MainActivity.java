@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.pwr.projekt.enduroracepilot.activities.MapFragmentActivity;
 import com.pwr.projekt.enduroracepilot.activities.MapsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,6 +18,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToMapActivity(View view) {
         Intent mapActivity = new Intent(this, MapsActivity.class);
+        startActivity( mapActivity);
+
+    }
+
+    public void goToMapFragmentActivity(View view) {
+        Intent mapActivity = new Intent(this, MapFragmentActivity.class);
         startActivity( mapActivity);
 
     }
