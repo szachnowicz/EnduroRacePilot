@@ -1,0 +1,5 @@
+The "activities" sub-folder will contain all the activities of your project,
+The "adapters" subfolder will contain the different adapters you have created for mapping your data into ListView, GridView, for example,
+The "fragments" subfolder will contain the different fragments you may need to create for your project (especially in the case of a TabbedActivity),
+The "interfaces" subfolder will contain your interfaces, especially when using an API,
+The sub-folder "models" will contain all the models representing the entities of your application.
