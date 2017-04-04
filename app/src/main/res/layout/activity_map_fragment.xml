@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        class="com.pwr.projekt.enduroracepilot.fragments.FirstFragment"
+        class="com.pwr.projekt.enduroracepilot.fragments.MapFragmentPOI"
         android:layout_width="368dp"
         android:layout_height="495dp"
         tools:layout_editor_absoluteY="8dp"
