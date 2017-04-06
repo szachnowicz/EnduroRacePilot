@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.pwr.projekt.enduroracepilot.activities.MapFragmentActivity;
-import com.pwr.projekt.enduroracepilot.activities.MapsActivity;
+import com.pwr.projekt.enduroracepilot.activities.RouteCreatingActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,8 +16,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void goToMapActivity(View view) {
-        Intent mapActivity = new Intent(this, MapsActivity.class);
+    public void goToCreateRouteActivity(View view) {
+        Intent mapActivity = new Intent(this, RouteCreatingActivity.class);
         startActivity( mapActivity);
 
     }

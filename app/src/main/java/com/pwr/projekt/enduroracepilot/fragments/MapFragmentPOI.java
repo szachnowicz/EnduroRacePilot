@@ -20,7 +20,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -53,7 +52,7 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMapView = (MapView) mView.findViewById(R.id.mapView);
+        mMapView = (MapView) mView.findViewById(R.id.poiAddingMapView);
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -66,7 +65,7 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_first, container, false);
+        mView = inflater.inflate(R.layout.poi_adding_fragment, container, false);
         initialiseAddPoiButton();
         return mView;
     }
@@ -88,7 +87,7 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
     }
 
     /*
-    this is realy smart solition to communicate between fragment and activity
+    this is really smart solition to communicate between fragment and activity
 
      */
     @Override
@@ -143,11 +142,11 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+        //mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
         //move map camera
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        // mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //  mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
     }
 
