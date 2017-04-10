@@ -5,16 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pwr.projekt.enduroracepilot.MainActivity">
+    tools:context="com.pwr.projekt.enduroracepilot.MainActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonCreate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="243dp"
-        android:layout_marginLeft="91dp"
-        android:layout_marginStart="137dp"
+        android:layout_marginBottom="149dp"
+        android:layout_marginLeft="126dp"
+        android:layout_marginStart="114dp"
         android:onClick="goToCreateRouteActivity"
         android:text="@string/route_create"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,12 +26,31 @@
         android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="139dp"
-        android:layout_marginLeft="92dp"
+        android:layout_marginBottom="259dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="24dp"
         android:layout_marginStart="114dp"
         android:onClick="goToMapFragmentActivity"
         android:text="@string/adding_poi_to_route"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+
+    <Button
+        android:id="@+id/buttunRoute"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="349dp"
+        android:layout_marginLeft="114dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="114dp"
+        android:onClick="showRoute"
+        android:text="@string/showRouteButtonText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

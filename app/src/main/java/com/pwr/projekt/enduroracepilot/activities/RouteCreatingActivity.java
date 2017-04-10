@@ -9,25 +9,34 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.fragments.PointsOfRouteFragment;
 import com.pwr.projekt.enduroracepilot.fragments.RouteCreationFragment;
+import com.pwr.projekt.enduroracepilot.interfaces.OnMarkerAddedCallback;
 
-public class RouteCreatingActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class RouteCreatingActivity extends AppCompatActivity implements OnMarkerAddedCallback {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     private ViewPager mViewPager;
+    private String ROUTE_ID_REFERENCE_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_creating);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            ROUTE_ID_REFERENCE_KEY = extras.getString(AddingRouteActivity.ROUTE_ID);
+
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), ROUTE_ID_REFERENCE_KEY);
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -35,14 +44,15 @@ public class RouteCreatingActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+//        setUpOnChangePageListner();
+
+    }
+
+    @Override
+    public void passMarketList(ArrayList<MarkerOptions> markersList) {
+
+//        Toast.makeText(this, "ABCD " + markersList.size(), Toast.LENGTH_SHORT).show();
+//        pointsOfRouteFragment.updateList();
 
     }
 
@@ -70,18 +80,26 @@ public class RouteCreatingActivity extends AppCompatActivity {
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private Fragment routeCreationFragment;
+
+        private Fragment pointsOfRouteFragment;
+
+        public SectionsPagerAdapter(FragmentManager fm, String ROUTE_ID_REFERENCE_KEY) {
+
             super(fm);
+            pointsOfRouteFragment = PointsOfRouteFragment.newInstance(ROUTE_ID_REFERENCE_KEY);
+            routeCreationFragment = RouteCreationFragment.newInstance(ROUTE_ID_REFERENCE_KEY);
+
         }
 
         @Override
         public Fragment getItem(int position) {
 
             if (position == 0) {
-                return RouteCreationFragment.newInstance();
+                return routeCreationFragment;
             }
             else {
-                return PointsOfRouteFragment.newInstance();
+                return pointsOfRouteFragment;
             }
 
         }

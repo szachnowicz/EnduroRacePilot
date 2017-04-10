@@ -1,4 +1,4 @@
-package com.pwr.projekt.enduroracepilot.model;
+package com.pwr.projekt.enduroracepilot.model.MapEntity;
 
 import com.pwr.projekt.enduroracepilot.R;
 

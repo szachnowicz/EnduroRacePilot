@@ -1,0 +1,96 @@
+package com.pwr.projekt.enduroracepilot.activities;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.pwr.projekt.enduroracepilot.R;
+import com.pwr.projekt.enduroracepilot.interfaces.OnGetDataListener;
+import com.pwr.projekt.enduroracepilot.model.Database;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+
+import java.util.ArrayList;
+
+public class CreatedRoutesListActivity extends AppCompatActivity {
+
+    public static final String ROUTE_ID = "ROUTE_REFERENCE";
+    private ListView createdRouteListview;
+    private ArrayList<Route> routeList;
+    private ArrayAdapter<Route> adapter;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        DatabaseReference routeRefernce = FirebaseDatabase.getInstance().getReference().child(Route.TABEL_NAME);
+
+        getAllResults(Route.TABEL_NAME);
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_created_routes);
+        routeList = new ArrayList<>();
+        final Intent creatRoute = new Intent(this, RouteCreatingActivity.class);
+        createdRouteListview = (ListView) findViewById(R.id.routeListARA);
+        adapter = new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routeList);
+        createdRouteListview.setAdapter(adapter);
+        createdRouteListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
+
+                creatRoute.putExtra(ROUTE_ID, routeList.get(postion).get_routeID());
+
+                startActivity(creatRoute);
+
+            }
+        });
+
+    }
+
+    private void getAllResults(String child) {
+        new Database().readDataOnce(child, new OnGetDataListener() {
+            @Override
+            public void onStart() {
+                //DO SOME THING WHEN START GET DATA HERE
+
+                Toast.makeText(CreatedRoutesListActivity.this, "on start", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                //DO SOME THING WHEN GET DATA SUCCESS HERE
+                Toast.makeText(CreatedRoutesListActivity.this, "on Suces", Toast.LENGTH_SHORT).show();
+                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
+                for (DataSnapshot snap : children
+                        ) {
+
+                    Route value = snap.getValue(Route.class);
+                    if (!routeList.contains(value)) {
+                        routeList.add(value);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+                //DO SOME THING WHEN GET DATA FAILED HERE
+            }
+        });
+
+    }
+}

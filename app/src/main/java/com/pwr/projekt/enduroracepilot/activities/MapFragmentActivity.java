@@ -24,27 +24,33 @@ public class MapFragmentActivity extends AppCompatActivity implements OnSelected
 
     private PoiPickerFragment poiPickerFragment;
     private int defaultMapFragmentHeight;
+    private String ROUTE_ID_REFERENCE_KEY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_fragment);
-        // fragment staff init
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            ROUTE_ID_REFERENCE_KEY = extras.getString(AddingRouteActivity.ROUTE_ID);
+
+        }
+
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
-        // the fragments init
+
         mapFragmentPOI = new MapFragmentPOI();
         poiPickerFragment = new PoiPickerFragment();
+        mapFragmentPOI.setROUTE_ID_REFERENCE_KEY(ROUTE_ID_REFERENCE_KEY);
 
-//        transaction.add(R.id.poiPickerFragment, poiPickerFragment);
         transaction.add(R.id.mapFragment, mapFragmentPOI);
         transaction.commit();
         poiMapFragmentLayout = (LinearLayout) findViewById(R.id.mapLayoutID);
         poiPickerLayout = (LinearLayout) findViewById(R.id.poiPickerLayoutID);
-//        poiMapFragmentLayout.setVisibility(View.GONE);
+
         poiPickerLayout.setVisibility(View.GONE);
 
-//        defaultMapFragmentHeight = poiMapFragmentLayout.getLayoutParams().height;
     }
 
     @Override
@@ -60,15 +66,12 @@ public class MapFragmentActivity extends AppCompatActivity implements OnSelected
             paramsMapLayout.height = metrics.heightPixels - 200;
         }
         else {
-            //paramsMapLayout.height = (defaultMapFragmentHeight);
             paramsMapLayout.height = (3 * metrics.heightPixels / 5 + 150);
             poiPickerLayout.setVisibility(View.VISIBLE);
 
         }
 
         poiMapFragmentLayout.setLayoutParams(paramsMapLayout);
-//        ViewGroup.LayoutParams paramsPickerLayout = poiPickerLayout.getLayoutParams();
-//        paramsPickerLayout.height = metrics.heightPixels - paramsMapLayout.height;
-//        poiPickerLayout.setLayoutParams(paramsPickerLayout);
+
     }
 }

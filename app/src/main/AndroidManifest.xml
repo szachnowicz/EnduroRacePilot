@@ -15,6 +15,11 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.READ_PROFILE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
@@ -40,16 +45,22 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAYIdK8WxMdsrRplkCun2Yx5Gy_USuw4ns"/>
 
-        <activity
-            android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
         <activity android:name=".activities.MapFragmentActivity">
         </activity>
         <activity
             android:name=".activities.RouteCreatingActivity"
             android:label="@string/title_activity_route_creating"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".CreateRouteActivity"
+            android:label="@string/title_activity_create_route">
+        </activity>
+        <activity android:name=".activities.AddingRouteActivity">
+        </activity>
+        <activity android:name=".activities.CreatedRoutesListActivity">
+        </activity>
+        <activity android:name=".activities.EditingRouteActivity">
         </activity>
     </application>
 

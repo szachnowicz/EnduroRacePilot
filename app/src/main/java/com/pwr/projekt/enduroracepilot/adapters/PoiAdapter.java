@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.model.PoiItem;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
 
 import java.util.ArrayList;
 

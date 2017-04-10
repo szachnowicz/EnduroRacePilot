@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "411439639270",
+    "firebase_url": "https://enduroracepilot.firebaseio.com",
+    "project_id": "enduroracepilot",
+    "storage_bucket": "enduroracepilot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411439639270:android:a932d6ba04d7e014",
+        "android_client_info": {
+          "package_name": "com.pwr.projekt.enduroracepilot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411439639270-tnlhrmiqt2khu5n83fojmkika4nfd2cd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_B7ERNzYsSlWPqdkfiDG1Vt3RoYMAtBU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

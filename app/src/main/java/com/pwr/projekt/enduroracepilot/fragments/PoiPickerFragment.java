@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.adapters.PoiAdapter;
-import com.pwr.projekt.enduroracepilot.model.PoiItem;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
 
 /**
  * A simple {@link Fragment} subclass.
