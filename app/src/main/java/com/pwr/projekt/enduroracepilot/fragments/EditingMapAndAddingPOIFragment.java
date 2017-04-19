@@ -15,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -28,16 +28,12 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.interfaces.OnGetDataListener;
 import com.pwr.projekt.enduroracepilot.interfaces.OnSelectedPOIListener;
-import com.pwr.projekt.enduroracepilot.model.Database;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
 
 import java.util.ArrayList;
@@ -45,32 +41,25 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks {
+public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks {
 
     private GoogleMap mGoogleMap;
     private MapView mMapView;
     private View mView;
-    private Marker mCurrLocationMarker;
+    private MarkerOptions currentFocuseMarker;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private OnSelectedPOIListener poiClickListener;
-    private String ROUTE_ID_REFERENCE_KEY;
+    private String routeIDRefereceKey;
     private ArrayList<Point> pointsList;
     private int currentPoint = 0;
+    private boolean zoom = false;
+    private ProgressBar progressBar;
 
-    public MapFragmentPOI() {
-        // Required empty public constructor
+    public EditingMapAndAddingPOIFragment() {
+
     }
 
-    public String getROUTE_ID_REFERENCE_KEY() {
-        return ROUTE_ID_REFERENCE_KEY;
-    }
-
-    public void setROUTE_ID_REFERENCE_KEY(String ROUTE_ID_REFERENCE_KEY) {
-        this.ROUTE_ID_REFERENCE_KEY = ROUTE_ID_REFERENCE_KEY;
-    }
-
-    //https://developer.android.com/training/location/receive-location-updates.html
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -90,9 +79,23 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.poi_adding_fragment, container, false);
 
+//        Toast.makeText(getActivity(), activity.getGetPointsList().size()+"sad", Toast.LENGTH_SHORT).show();
         initialiseAddPoiButton();
+        initialiseProgresBar();
 
         return mView;
+    }
+
+    private void initialisecurrentFocuseMarker() {
+
+        currentFocuseMarker = new MarkerOptions();
+        currentFocuseMarker.draggable(true);
+
+    }
+
+    private void initialiseProgresBar() {
+        progressBar = (ProgressBar) mView.findViewById(R.id.progressBar2);
+
     }
 
     private void initialiseAddPoiButton() {
@@ -103,8 +106,13 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
                     @Override
                     public void onClick(View view) {
 
-                        poiClickListener.buttonClick();
+                        poiClickListener.showPoiPicker();
+                        if (currentFocuseMarker.getPosition() != null) {
+                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentFocuseMarker.getPosition()));
+                            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
+//                            mGoogleMap.addMarker(currentFocuseMarker);
+                        }
                     }
                 }
         );
@@ -116,11 +124,16 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (currentPoint < pointsList.size()) {
+                        if (currentPoint < pointsList.size() && progressBar.getVisibility() == View.GONE) {
 
-                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(pointsList.get(currentPoint).getLatLng()));
+                            LatLng latLng = new LatLng(pointsList.get(currentPoint).getLat(), pointsList.get(currentPoint).getLng());
+                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
-                            currentPoint++;
+
+                            currentFocuseMarker.position(latLng);
+
+                            if (currentPoint < pointsList.size() - 1)
+                                currentPoint++;
 
                         }
 
@@ -132,10 +145,13 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
                     @Override
                     public void onClick(View view) {
 
-                        if (currentPoint >= 1) {
+                        if (currentPoint >= 1 && progressBar.getVisibility() == View.GONE) {
 
-                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(pointsList.get(currentPoint).getLatLng()));
+                            LatLng latLng = new LatLng(pointsList.get(currentPoint).getLat(), pointsList.get(currentPoint).getLng());
+                            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+                            currentFocuseMarker.position(latLng);
+
                             currentPoint--;
 
                         }
@@ -146,10 +162,6 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
 
     }
 
-    /*
-    this is really smart solition to communicate between fragment and activity
-
-     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -190,7 +202,7 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
-
+        initialisecurrentFocuseMarker();
     }
 
     @Override
@@ -200,14 +212,16 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-//        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
+//        markerOptions.title("Current Position");
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
 
-        //move map camera
-//         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//         mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+    }
 
+    public void setPointsList(ArrayList<Point> pointsList) {
+        if (pointsList != null && pointsList.size() > 0) {
+            this.pointsList = pointsList;
+            addAllMarkers();
+        }
     }
 
     @Override
@@ -238,48 +252,6 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        pointsList = new ArrayList<>();
-        getAllPointsFromDatabase(Point.TABEL_NAME, ROUTE_ID_REFERENCE_KEY);
-    }
-
-    private void getAllPointsFromDatabase(String child, final String key) {
-        new Database().readDataOnce(child, new OnGetDataListener() {
-            @Override
-            public void onStart() {
-                //DO SOME THING WHEN START GET DATA HERE
-                Toast.makeText(getContext(), "on start", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                //DO SOME THING WHEN GET DATA SUCCESS HERE
-
-                Iterable<DataSnapshot> children = dataSnapshot.getChildren();
-                for (DataSnapshot chlid : children
-                        ) {
-                    Point value = chlid.getValue(Point.class);
-
-                    if (value != null && value.getRouteID().equals(key) && !pointsList.contains(value)) {
-                        pointsList.add(value);
-
-                    }
-
-                }
-                addAllMarkers();
-            }
-
-            @Override
-            public void onFailed(DatabaseError databaseError) {
-                //DO SOME THING WHEN GET DATA FAILED HERE
-            }
-        });
-
-    }
-
     private void addAllMarkers() {
 
         PolylineOptions options = new PolylineOptions();
@@ -289,17 +261,28 @@ public class MapFragmentPOI extends Fragment implements OnMapReadyCallback, Loca
             MarkerOptions marek = new MarkerOptions();
             marek.position(point.getLatLng());
             marek.title(point.getDiscription());
-            //mGoogleMap.addMarker(marek);
+            mGoogleMap.addMarker(marek);
             options.add(point.getLatLng());
 
-            Toast.makeText(getContext(), "added points", Toast.LENGTH_SHORT).show();
         }
 
-        options.width(5)
-                .color(Color.RED);
-
+        options.width(5).color(Color.RED);
         Polyline line = mGoogleMap.addPolyline(options);
+
+        if (!pointsList.isEmpty()) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(pointsList.get(0).getLatLng()));
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+
+            currentFocuseMarker.position((pointsList.get(0).getLatLng()));
+        }
+        progressBar.setVisibility(View.GONE);
 
     }
 
+    public void addPoiItemToMap(PoiItem poiItem) {
+        currentFocuseMarker.icon(BitmapDescriptorFactory.fromResource(poiItem.getDrawableID()));
+        currentFocuseMarker.title(poiItem.getPoiName());
+        mGoogleMap.addMarker(currentFocuseMarker);
+
+    }
 }

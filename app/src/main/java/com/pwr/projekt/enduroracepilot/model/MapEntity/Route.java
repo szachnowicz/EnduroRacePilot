@@ -1,5 +1,6 @@
 package com.pwr.projekt.enduroracepilot.model.MapEntity;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -15,6 +16,16 @@ public class Route {
     private String routeName;
     private String routeDiscription;
     private String author;
+    private ArrayList<Point> pointsOfRoute;
+
+    public Route(String routeID, Date date, String routeName, String routeDiscription, String author, ArrayList<Point> pointsOfRoute) {
+        this.routeID = routeID;
+        this.date = date;
+        this.routeName = routeName;
+        this.routeDiscription = routeDiscription;
+        this.author = author;
+        this.pointsOfRoute = pointsOfRoute;
+    }
 
     public Route() {
     }
@@ -25,6 +36,23 @@ public class Route {
         this.routeName = routeName;
         this.routeDiscription = routeDiscription;
         this.author = author;
+    }
+
+    public String getRouteID() {
+
+        return routeID;
+    }
+
+    public void setRouteID(String routeID) {
+        this.routeID = routeID;
+    }
+
+    public ArrayList<Point> getPointsOfRoute() {
+        return pointsOfRoute;
+    }
+
+    public void setPointsOfRoute(ArrayList<Point> pointsOfRoute) {
+        this.pointsOfRoute = pointsOfRoute;
     }
 
     @Override

@@ -6,9 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pwr.projekt.enduroracepilot.R;
+import com.pwr.projekt.enduroracepilot.interfaces.OnSelectedPOIListener;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
 
 import java.util.ArrayList;
@@ -20,9 +20,11 @@ import java.util.ArrayList;
 public class PoiAdapter extends RecyclerView.Adapter<PoiAdapter.ViewHolder> {
 
     private ArrayList<PoiItem> poiItems;
+    private OnSelectedPOIListener onSelectedPOIListener;
 
-    public PoiAdapter(ArrayList<PoiItem> poiItems) {
+    public PoiAdapter(ArrayList<PoiItem> poiItems, OnSelectedPOIListener _onSelectedPOIListener) {
         this.poiItems = poiItems;
+        onSelectedPOIListener = _onSelectedPOIListener;
     }
 
     @Override
@@ -41,7 +43,8 @@ public class PoiAdapter extends RecyclerView.Adapter<PoiAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(holder.itemView.getContext(), "" + poiItems.get(position).getPoiName(), Toast.LENGTH_SHORT).show();
+
+                onSelectedPOIListener.onPoiItemChoose(poiItems.get(position));
             }
         });
 

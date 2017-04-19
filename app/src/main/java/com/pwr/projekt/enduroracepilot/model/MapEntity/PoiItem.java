@@ -13,17 +13,21 @@ public class PoiItem {
     private String poiName;
     private int drawableID;
 
+    public PoiItem() {
+    }
+
     public PoiItem(String poiName, int drawableID) {
         this.poiName = poiName;
+
         this.drawableID = drawableID;
     }
 
     public static ArrayList<PoiItem> createItemsToPicker() {
         ArrayList<PoiItem> mDateSet = new ArrayList<>();
 // // TODO: 2017-04-06  utworzyć do kazdego String w @strings
-        mDateSet.add(new PoiItem("Uskok (Drop)", R.mipmap.ic_launcher));
-        mDateSet.add(new PoiItem("schody", R.mipmap.ic_launcher));
-        mDateSet.add(new PoiItem("wąski nawrót w prawo ", R.mipmap.ic_launcher));
+        mDateSet.add(new PoiItem("Uskok (Drop)", R.drawable.drop));
+        mDateSet.add(new PoiItem("schody", R.drawable.stairsd));
+        mDateSet.add(new PoiItem("wąski nawrót w prawo ", R.drawable.turnleft));
         mDateSet.add(new PoiItem("wąski nawrót w lewo", R.mipmap.ic_launcher));
         mDateSet.add(new PoiItem("szarpa z lewej", R.mipmap.ic_launcher));
         mDateSet.add(new PoiItem("przeszkoda do przeskoczenia", R.mipmap.ic_launcher));

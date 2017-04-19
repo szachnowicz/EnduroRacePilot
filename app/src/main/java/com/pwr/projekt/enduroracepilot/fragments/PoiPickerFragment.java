@@ -1,5 +1,7 @@
 package com.pwr.projekt.enduroracepilot.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.adapters.PoiAdapter;
+import com.pwr.projekt.enduroracepilot.interfaces.OnSelectedPOIListener;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
 
 /**
@@ -20,6 +23,7 @@ public class PoiPickerFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
+    private OnSelectedPOIListener onSelectedPOIListener;
     private View view;
 
     public PoiPickerFragment() {
@@ -34,10 +38,27 @@ public class PoiPickerFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PoiAdapter(PoiItem.createItemsToPicker());
+        mAdapter = new PoiAdapter(PoiItem.createItemsToPicker(), onSelectedPOIListener);
         mRecyclerView.setAdapter(mAdapter);
 
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Activity activity;
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+            try {
+
+                onSelectedPOIListener = (OnSelectedPOIListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                                                     + " must implement OnSelected");
+
+            }
+        }
+    }
 }

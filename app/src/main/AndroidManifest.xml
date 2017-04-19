@@ -45,7 +45,7 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAYIdK8WxMdsrRplkCun2Yx5Gy_USuw4ns"/>
 
-        <activity android:name=".activities.MapFragmentActivity">
+        <activity android:name=".activities.AddingPoiElementsToRouteActivity">
         </activity>
         <activity
             android:name=".activities.RouteCreatingActivity"
@@ -56,7 +56,7 @@
             android:name=".CreateRouteActivity"
             android:label="@string/title_activity_create_route">
         </activity>
-        <activity android:name=".activities.AddingRouteActivity">
+        <activity android:name=".activities.AddingSingelRouteActivity">
         </activity>
         <activity android:name=".activities.CreatedRoutesListActivity">
         </activity>

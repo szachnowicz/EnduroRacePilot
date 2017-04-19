@@ -1,13 +1,15 @@
 package com.pwr.projekt.enduroracepilot.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,12 +22,15 @@ import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
 
 import java.util.ArrayList;
 
+// TODO: 2017-04-18 ciekawe rzeczy
+//https://github.com/wasabeef/awesome-android-ui/blob/master/pages/Progress.md
 public class CreatedRoutesListActivity extends AppCompatActivity {
 
     public static final String ROUTE_ID = "ROUTE_REFERENCE";
     private ListView createdRouteListview;
     private ArrayList<Route> routeList;
     private ArrayAdapter<Route> adapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onStart() {
@@ -45,6 +50,11 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
         final Intent creatRoute = new Intent(this, RouteCreatingActivity.class);
         createdRouteListview = (ListView) findViewById(R.id.routeListARA);
         adapter = new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routeList);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+
+
         createdRouteListview.setAdapter(adapter);
         createdRouteListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -58,6 +68,39 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
             }
         });
 
+        createdRouteListview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(CreatedRoutesListActivity.this);
+                alert.setTitle("Delete");
+                alert.setMessage("Are you sure you want to delete?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new Database().getRefereceToObject(Route.TABEL_NAME, routeList.get(position).get_routeID())
+                                .removeValue();
+                        routeList.remove(position);
+                        adapter.notifyDataSetChanged();
+                        dialog.dismiss();
+
+                    }
+                });
+
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+
+                return true;
+            }
+        });
+
     }
 
     private void getAllResults(String child) {
@@ -66,13 +109,13 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
             public void onStart() {
                 //DO SOME THING WHEN START GET DATA HERE
 
-                Toast.makeText(CreatedRoutesListActivity.this, "on start", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 //DO SOME THING WHEN GET DATA SUCCESS HERE
-                Toast.makeText(CreatedRoutesListActivity.this, "on Suces", Toast.LENGTH_SHORT).show();
+
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 for (DataSnapshot snap : children
                         ) {
@@ -83,6 +126,7 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
                     }
                     adapter.notifyDataSetChanged();
                 }
+                progressBar.setVisibility(View.GONE);
 
             }
 

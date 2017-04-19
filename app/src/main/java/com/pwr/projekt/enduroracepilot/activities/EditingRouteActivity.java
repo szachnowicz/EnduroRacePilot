@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,7 @@ public class EditingRouteActivity extends AppCompatActivity {
     private ListView createdRouteListview;
     private ArrayList<Route> routeList;
     private ArrayAdapter<Route> adapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onStart() {
@@ -53,6 +55,7 @@ public class EditingRouteActivity extends AppCompatActivity {
                         routeList.add(value);
                     }
                     adapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
                 }
 
             }
@@ -69,12 +72,14 @@ public class EditingRouteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editing_route);
+        progressBar = (ProgressBar) findViewById(R.id.progressBarRE);
 
         routeList = new ArrayList<>();
-        final Intent creatRoute = new Intent(this, MapFragmentActivity.class);
+        final Intent creatRoute = new Intent(this, AddingPoiElementsToRouteActivity.class);
         createdRouteListview = (ListView) findViewById(R.id.routeEditList);
         adapter = new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routeList);
         createdRouteListview.setAdapter(adapter);
+
         createdRouteListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -87,4 +92,5 @@ public class EditingRouteActivity extends AppCompatActivity {
             }
         });
     }
+
 }

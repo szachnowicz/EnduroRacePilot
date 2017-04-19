@@ -5,14 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pwr.projekt.enduroracepilot.activities.AddingRouteActivity">
+    tools:context="com.pwr.projekt.enduroracepilot.activities.AddingSingelRouteActivity">
 
     <EditText
         android:id="@+id/routeNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/routeNameHint"
@@ -25,47 +27,51 @@
 
     <EditText
         android:id="@+id/routeDiscriptionEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="84dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="32dp"
         android:ems="10"
         android:hint="@string/routeDescriptionTextView_RCF"
-        android:imeOptions="actionNext"
-        android:inputType="textMultiLine"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:imeOptions="actionDone"
+        android:inputType="textAutoComplete"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/routeNameTextView"/>
+        app:layout_constraintTop_toBottomOf="@+id/authorOfRouteEditText"/>
 
     <EditText
         android:id="@+id/authorOfRouteEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="194dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
         android:ems="10"
         android:hint="@string/authorOfRouteEditTextHintRCF"
-        android:imeOptions="actionDone"
+        android:imeOptions="normal"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/routeNameTextView"/>
 
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:onClick="createRoute"
         android:text="@string/createRouteButtonTextRCF"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/authorOfRouteEditText"/>
+        app:layout_constraintTop_toBottomOf="@+id/routeDiscriptionEditText"/>
 
 </android.support.constraint.ConstraintLayout>

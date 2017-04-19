@@ -14,7 +14,7 @@ import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
 
 import java.util.Date;
 
-public class AddingRouteActivity extends AppCompatActivity {
+public class AddingSingelRouteActivity extends AppCompatActivity {
 
     public static final String ROUTE_ID = "ROUTE_REFERENCE";
     private TextView routeName;
@@ -58,10 +58,10 @@ public class AddingRouteActivity extends AppCompatActivity {
     }
 
     private boolean checkIfFullFilledForm() {
-        if (routeDiscription.getText().length() < 1) {
-            Toast.makeText(this, "Pole z opisem trasy jest puste !", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+//        if (routeDiscription.getText().length() < 1) {
+//            Toast.makeText(this, "Pole z opisem trasy jest puste !", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
 
         if (routeAuthor.getText().length() < 1) {
             Toast.makeText(this, "Pole z autore trasy jest puste !", Toast.LENGTH_SHORT).show();

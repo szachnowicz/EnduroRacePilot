@@ -2,6 +2,7 @@ package com.pwr.projekt.enduroracepilot.model;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.pwr.projekt.enduroracepilot.interfaces.OnGetDataListener;
@@ -41,5 +42,24 @@ public class Database {
             }
         });
     }
+
+    public DatabaseReference getRefereceToObject(String tabelName, String key) {
+        FirebaseDatabase instance = FirebaseDatabase.getInstance();
+
+        return instance.getReference(tabelName).child(key);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

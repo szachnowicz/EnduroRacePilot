@@ -8,12 +8,15 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,10 +38,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.activities.RouteCreatingActivity;
+import com.pwr.projekt.enduroracepilot.interfaces.FullRouteDataCallback;
 import com.pwr.projekt.enduroracepilot.interfaces.OnGetDataListener;
-import com.pwr.projekt.enduroracepilot.interfaces.OnMarkerAddedCallback;
 import com.pwr.projekt.enduroracepilot.model.Database;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.GPSPoint;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
 
 import java.util.ArrayList;
@@ -59,15 +62,21 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
     private boolean zoomed = false;
     private int routeNO = 0;
 
-    private OnMarkerAddedCallback onMarkerAddedCallback;
+    private FullRouteDataCallback fullRouteDataCallback;
 
     private ArrayList<MarkerOptions> marekList;
     private ArrayList<Point> pointsList;
+    private ArrayList<GPSPoint> gpsPointList;
     /*****************************************************/
     private DatabaseReference pointsDatabaseReference;
     private String ROUTE_ID_REFERENCE_KEY;
 
     /*****************************************************/
+
+    private Button trackGPSButton;
+    private Boolean trackGps = false;
+
+    private ProgressBar progressBar;
 
     public RouteCreationFragment() {
         // Required empty public constructor
@@ -76,7 +85,6 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
     public static RouteCreationFragment newInstance(String _ROUTE_ID_REFERENCE_KEY) {
 
         RouteCreationFragment fragment = new RouteCreationFragment();
-        // add some stuff if nesseery
         fragment.setRouteRefernce(_ROUTE_ID_REFERENCE_KEY);
         return fragment;
     }
@@ -90,6 +98,18 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
                              Bundle savedInstanceState) {
         fragmentView = inflater.inflate(R.layout.fragment_route_creation, container, false);
 
+        trackGPSButton = (Button) fragmentView.findViewById(R.id.trackGPSbutton);
+        progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressBar3);
+
+        trackGPSButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                trackGps = !trackGps;
+                Toast.makeText(getContext(), trackGps ? " Sledzenie GPS włączone " : " śledzenie wylączone ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        gpsPointList = new ArrayList<>();
         pointsDatabaseReference = FirebaseDatabase.getInstance().getReference().child(Point.TABEL_NAME);
 
         return fragmentView;
@@ -132,16 +152,52 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
 
-        //move map camera
+        if (trackGps) {
+
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+            if (checkDistanceBeetwenPoints
+                    (
+                            markerOptions.getPosition(),
+                            pointsList.get(pointsList.size() - 1).getLatLng())) {
+                addGPSPoint(markerOptions);
+            }
+
+        }
 
         if (!zoomed) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
             zoomed = !zoomed;
         }
+    }
+
+    private boolean checkDistanceBeetwenPoints(LatLng currentPositon, LatLng lastsavedPoint) {
+
+        Location loc1 = new Location("");
+        loc1.setLatitude(lastsavedPoint.latitude);
+        loc1.setLongitude(lastsavedPoint.longitude);
+        Location loc2 = new Location("");
+        loc2.setLatitude(currentPositon.latitude);
+        loc2.setLongitude(currentPositon.longitude);
+        float distanceInMeters = loc1.distanceTo(loc2);
+
+        return distanceInMeters > 1.0;
+
+    }
+
+    private void addGPSPoint(MarkerOptions markerOptions) {
+
+        routeNO++;
+        markerOptions.title("GPS posstion " + routeNO);
+        ROUTE_ID = pointsDatabaseReference.push().getKey();
+        Point point = new Point(ROUTE_ID_REFERENCE_KEY, routeNO, markerOptions);
+        pointsList.add(point);
+        gpsPointList.add(new GPSPoint(ROUTE_ID, gpsPointList.size(), markerOptions));
+        pointsDatabaseReference.child(ROUTE_ID).setValue(point);
+        mGoogleMap.addMarker(markerOptions);
+
     }
 
     @Override
@@ -179,26 +235,10 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Activity activity;
-        if (context instanceof Activity) {
-            activity = (Activity) context;
-            try {
-
-                onMarkerAddedCallback = (RouteCreatingActivity) activity;
-            } catch (ClassCastException e) {
-                throw new ClassCastException(activity.toString()
-                                                     + " must implement OnSelected");
-
-            }
-        }
-
-    }
-
-    @Override
     public void onMapClick(LatLng latLng) {
 
+        if (trackGps)
+            return;
         MarkerOptions marker = new MarkerOptions();
 
         marker.position(latLng);
@@ -222,7 +262,7 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
         pointsDatabaseReference.child(ROUTE_ID).setValue(point);
 
         marekList.add(marker);
-//        onMarkerAddedCallback.passMarketList(marekList);
+
     }
 
     @Override
@@ -236,7 +276,6 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
             @Override
             public void onStart() {
                 //DO SOME THING WHEN START GET DATA HERE
-                Toast.makeText(getContext(), "on start", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -249,12 +288,16 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
                         ) {
                     Point value = chlid.getValue(Point.class);
 
-                    if (value != null && value.getRouteID().equals(key) && !pointsList.contains(value)) {
+                    if (value != null
+                            && value.getRouteID() != null
+                            && value.getRouteID().equals(key)
+                            && !pointsList.contains(value)) {
                         pointsList.add(value);
 
                     }
 
                 }
+                progressBar.setVisibility(View.GONE);
                 addAllMarkers();
             }
 
@@ -284,6 +327,45 @@ public class RouteCreationFragment extends Fragment implements OnMapReadyCallbac
                 .color(Color.RED);
 
         Polyline line = mGoogleMap.addPolyline(options);
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Activity activity;
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+            try {
+
+                fullRouteDataCallback = (FullRouteDataCallback) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                                                     + " must implement OnSelected");
+
+            }
+        }//
+
+        //// FIXME: 2017-04-19
+//        getRouteFromActvity();
+
+    }
+
+    private void getRouteFromActvity() {
+        Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+
+                if (fullRouteDataCallback.getRoute().getPointsOfRoute() != null)
+                    pointsList = fullRouteDataCallback.getRoute().getPointsOfRoute();
+                addAllMarkers();
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getContext(), " get Route" + fullRouteDataCallback.getRoute().toString(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        handler.postDelayed(r, 2000);
 
     }
 

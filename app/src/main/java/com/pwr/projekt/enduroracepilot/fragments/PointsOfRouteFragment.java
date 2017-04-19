@@ -1,10 +1,13 @@
 package com.pwr.projekt.enduroracepilot.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -14,6 +17,7 @@ import com.pwr.projekt.enduroracepilot.adapters.RoutePointsAdapter;
 import com.pwr.projekt.enduroracepilot.interfaces.OnGetDataListener;
 import com.pwr.projekt.enduroracepilot.model.Database;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
 import com.pwr.projekt.enduroracepilot.model.PointsDao;
 
 import java.util.ArrayList;
@@ -86,20 +90,58 @@ public class PointsOfRouteFragment extends Fragment {
         pointsListView = (ListView) view.findViewById(R.id.pointsListView);
         adapter = new RoutePointsAdapter(getContext(), points);
         pointsListView.setAdapter(adapter);
+
+        addingAdapterListener();
         return view;
+
+    }
+
+    private void addingAdapterListener() {
+
+        pointsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                alert.setTitle("Delete");
+                alert.setMessage("Are you sure you want to delete?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new Database().getRefereceToObject(Route.TABEL_NAME, points.get(position).getRouteID())
+                                .removeValue();
+                        points.remove(position);
+                        adapter.notifyDataSetChanged();
+                        dialog.dismiss();
+
+                    }
+                });
+
+                alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+
+                return true;
+            }
+        });
+
     }
 
     private void getAllPointsFromDatabase(String child, final String key) {
         new Database().readDataContinulsly(child, new OnGetDataListener() {
             @Override
             public void onStart() {
-                //DO SOME THING WHEN START GET DATA HERE
 
             }
 
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                //DO SOME THING WHEN GET DATA SUCCESS HERE
 
                 Iterable<DataSnapshot> children = dataSnapshot.getChildren();
                 for (DataSnapshot chlid : children
@@ -116,7 +158,7 @@ public class PointsOfRouteFragment extends Fragment {
 
             @Override
             public void onFailed(DatabaseError databaseError) {
-                //DO SOME THING WHEN GET DATA FAILED HERE
+
             }
         });
 
