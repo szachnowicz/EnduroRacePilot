@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.pwr.projekt.enduroracepilot.activities.AddingSingelRouteActivity;
 import com.pwr.projekt.enduroracepilot.activities.BrowseRouteActivity;
 import com.pwr.projekt.enduroracepilot.activities.EditingRouteActivity;
+import com.pwr.projekt.enduroracepilot.activities.RouteCreatingActivity;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +27,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.updated_entry_point);
+
+
+
+        Button newRoute = (Button) findViewById(R.id.startRun);
+        newRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, RouteCreatingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
@@ -37,14 +55,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToCreateRouteActivity(View view) {
-        Intent mapActivity = new Intent(this, AddingSingelRouteActivity.class);
+        Intent mapActivity = new Intent(this, RouteCreatingActivity.class);
         startActivity(mapActivity);
 
     }
-
+/*
     public void goToMapFragmentActivity(View view) {
         Intent mapActivity = new Intent(this, EditingRouteActivity.class);
         startActivity(mapActivity);
 
     }
+    */
 }
