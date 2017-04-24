@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.interfaces.OnGetDataListener;
+import com.pwr.projekt.enduroracepilot.MVP.repository.OnGetDataListener;
 import com.pwr.projekt.enduroracepilot.model.Database;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
 
@@ -85,12 +85,13 @@ public class EditingRouteActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
 
-                creatRoute.putExtra(ROUTE_ID, routeList.get(postion).get_routeID());
+                creatRoute.putExtra(ROUTE_ID, routeList.get(postion).getRouteID());
 
                 startActivity(creatRoute);
 
             }
         });
     }
+
 
 }

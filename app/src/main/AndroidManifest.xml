@@ -24,8 +24,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -50,17 +52,19 @@
         <activity
             android:name=".activities.RouteCreatingActivity"
             android:label="@string/title_activity_route_creating"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
         <activity
-            android:name=".CreateRouteActivity"
-            android:label="@string/title_activity_create_route">
+            android:name=".activities.AddingSingelRouteActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activities.AddingSingelRouteActivity">
+        <activity android:name=".activities.BrowseRouteActivity"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activities.CreatedRoutesListActivity">
-        </activity>
-        <activity android:name=".activities.EditingRouteActivity">
+        <activity android:name=".activities.EditingRouteActivity"
+                  android:screenOrientation="portrait">
         </activity>
     </application>
 

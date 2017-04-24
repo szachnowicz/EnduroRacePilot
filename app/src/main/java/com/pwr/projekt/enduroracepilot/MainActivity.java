@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.pwr.projekt.enduroracepilot.activities.AddingSingelRouteActivity;
-import com.pwr.projekt.enduroracepilot.activities.CreatedRoutesListActivity;
+import com.pwr.projekt.enduroracepilot.activities.BrowseRouteActivity;
 import com.pwr.projekt.enduroracepilot.activities.EditingRouteActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showRoute(View view) {
-        Intent mapActivity = new Intent(this, CreatedRoutesListActivity.class);
+        Intent mapActivity = new Intent(this, BrowseRouteActivity.class);
         startActivity(mapActivity);
 
     }

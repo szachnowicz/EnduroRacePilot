@@ -14,6 +14,7 @@ import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sebastian on 2017-04-07.
@@ -26,10 +27,10 @@ public class RoutePointsAdapter extends ArrayAdapter<Point> {
     private TextView textView;
     private ImageView imageView;
 
-    public RoutePointsAdapter(@NonNull Context context, ArrayList<Point> markerOption) {
+    public RoutePointsAdapter(@NonNull Context context, List<Point> markerOption) {
         super(context, -1, markerOption);
         this.context = context;
-        markerOptions = markerOption;
+        markerOptions = (ArrayList<Point>) markerOption;
     }
 
     @NonNull

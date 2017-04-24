@@ -1,4 +1,4 @@
-package com.pwr.projekt.enduroracepilot.interfaces;
+package com.pwr.projekt.enduroracepilot.MVP.repository;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

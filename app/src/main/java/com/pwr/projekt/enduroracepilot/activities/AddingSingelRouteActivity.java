@@ -43,7 +43,7 @@ public class AddingSingelRouteActivity extends AppCompatActivity {
         String routeID = routeDatabaseReference.push().getKey();
 
         Route route = new Route();
-        route.set_routeID(routeID);
+        route.setRouteID(routeID);
         route.setRouteName(routeName.getText().toString());
         route.setAuthor(routeAuthor.getText().toString());
         route.setRouteDiscription(routeDiscription.getText().toString());
@@ -58,10 +58,6 @@ public class AddingSingelRouteActivity extends AppCompatActivity {
     }
 
     private boolean checkIfFullFilledForm() {
-//        if (routeDiscription.getText().length() < 1) {
-//            Toast.makeText(this, "Pole z opisem trasy jest puste !", Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
 
         if (routeAuthor.getText().length() < 1) {
             Toast.makeText(this, "Pole z autore trasy jest puste !", Toast.LENGTH_SHORT).show();

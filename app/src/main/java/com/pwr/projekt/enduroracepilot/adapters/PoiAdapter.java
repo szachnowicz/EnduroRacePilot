@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.interfaces.OnSelectedPOIListener;
+import com.pwr.projekt.enduroracepilot.interfaces.AddingPOIFragmentCallback;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
 
 import java.util.ArrayList;
@@ -20,9 +20,9 @@ import java.util.ArrayList;
 public class PoiAdapter extends RecyclerView.Adapter<PoiAdapter.ViewHolder> {
 
     private ArrayList<PoiItem> poiItems;
-    private OnSelectedPOIListener onSelectedPOIListener;
+    private AddingPOIFragmentCallback onSelectedPOIListener;
 
-    public PoiAdapter(ArrayList<PoiItem> poiItems, OnSelectedPOIListener _onSelectedPOIListener) {
+    public PoiAdapter(ArrayList<PoiItem> poiItems, AddingPOIFragmentCallback _onSelectedPOIListener) {
         this.poiItems = poiItems;
         onSelectedPOIListener = _onSelectedPOIListener;
     }

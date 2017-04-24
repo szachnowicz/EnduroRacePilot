@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.pwr.projekt.enduroracepilot.fragments.PointsOfRouteFragment;
-import com.pwr.projekt.enduroracepilot.fragments.RouteCreationFragment;
+import com.pwr.projekt.enduroracepilot.fragments.RouteDetalisFragment;
+import com.pwr.projekt.enduroracepilot.fragments.RouteDisplayingMapFragment;
 
 /**
  * Created by Sebastian on 2017-04-18.
@@ -20,8 +20,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public SectionsPagerAdapter(FragmentManager fm, String ROUTE_ID_REFERENCE_KEY) {
 
         super(fm);
-        pointsOfRouteFragment = PointsOfRouteFragment.newInstance(ROUTE_ID_REFERENCE_KEY);
-        routeCreationFragment = RouteCreationFragment.newInstance(ROUTE_ID_REFERENCE_KEY);
+        pointsOfRouteFragment = RouteDetalisFragment.newInstance(ROUTE_ID_REFERENCE_KEY);
+        routeCreationFragment = RouteDisplayingMapFragment.newInstance(ROUTE_ID_REFERENCE_KEY);
 
     }
 

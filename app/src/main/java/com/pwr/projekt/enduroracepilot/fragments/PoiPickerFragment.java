@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.adapters.PoiAdapter;
-import com.pwr.projekt.enduroracepilot.interfaces.OnSelectedPOIListener;
+import com.pwr.projekt.enduroracepilot.interfaces.AddingPOIFragmentCallback;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
 
 /**
@@ -23,7 +23,7 @@ public class PoiPickerFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
-    private OnSelectedPOIListener onSelectedPOIListener;
+    private AddingPOIFragmentCallback onSelectedPOIListener;
     private View view;
 
     public PoiPickerFragment() {
@@ -53,7 +53,7 @@ public class PoiPickerFragment extends Fragment {
             activity = (Activity) context;
             try {
 
-                onSelectedPOIListener = (OnSelectedPOIListener) activity;
+                onSelectedPOIListener = (AddingPOIFragmentCallback) activity;
             } catch (ClassCastException e) {
                 throw new ClassCastException(activity.toString()
                                                      + " must implement OnSelected");
