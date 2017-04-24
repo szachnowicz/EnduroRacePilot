@@ -30,18 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.updated_entry_point);
 
 
-
-        Button newRoute = (Button) findViewById(R.id.startRun);
-        newRoute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RouteCreatingActivity.class);
-                startActivity(intent);
-            }
-        });
-
-
-
+         //TODO: start run
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
 
@@ -53,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(mapActivity);
 
     }
-
+/*
     public void goToCreateRouteActivity(View view) {
         Intent mapActivity = new Intent(this, RouteCreatingActivity.class);
         startActivity(mapActivity);

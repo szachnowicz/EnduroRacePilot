@@ -21,6 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 
@@ -62,7 +63,13 @@ public class BrowseRouteActivity extends AppCompatActivity implements BrowseRout
 
         return createDeleteRouteDialog(position);
     }
+    @OnClick(R.id.createRouteButton)
+    public void onClick(){
 
+            Intent mapActivity = new Intent(this, RouteCreatingActivity.class);
+            startActivity(mapActivity);
+
+    }
     @OnItemClick(R.id.routeListARA)
     public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
         final Intent creatRoute = new Intent(this, RouteCreatingActivity.class);
