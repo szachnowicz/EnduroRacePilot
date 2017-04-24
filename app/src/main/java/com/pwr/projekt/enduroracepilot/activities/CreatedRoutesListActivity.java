@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -28,6 +29,7 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
 
     public static final String ROUTE_ID = "ROUTE_REFERENCE";
     private ListView createdRouteListview;
+    private Button newRoute;
     private ArrayList<Route> routeList;
     private ArrayAdapter<Route> adapter;
     private ProgressBar progressBar;
@@ -37,10 +39,10 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
         super.onStart();
 
         DatabaseReference routeRefernce = FirebaseDatabase.getInstance().getReference().child(Route.TABEL_NAME);
-
         getAllResults(Route.TABEL_NAME);
 
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +51,12 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
         routeList = new ArrayList<>();
         final Intent creatRoute = new Intent(this, RouteCreatingActivity.class);
         createdRouteListview = (ListView) findViewById(R.id.routeListARA);
+
+
         adapter = new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routeList);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
 
 
 
@@ -60,9 +65,7 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
-
                 creatRoute.putExtra(ROUTE_ID, routeList.get(postion).get_routeID());
-
                 startActivity(creatRoute);
 
             }
@@ -100,6 +103,16 @@ public class CreatedRoutesListActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        newRoute = (Button) findViewById(R.id.createRouteButton);
+        newRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreatedRoutesListActivity.this, AddingSingelRouteActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
     }
 

@@ -26,8 +26,8 @@ public class PoiItem {
         ArrayList<PoiItem> mDateSet = new ArrayList<>();
 // // TODO: 2017-04-06  utworzyć do kazdego String w @strings
         mDateSet.add(new PoiItem("Uskok (Drop)", R.drawable.drop));
-        mDateSet.add(new PoiItem("schody", R.drawable.stairsd));
-        mDateSet.add(new PoiItem("wąski nawrót w prawo ", R.drawable.turnleft));
+        mDateSet.add(new PoiItem("schody", R.drawable.drop));
+        mDateSet.add(new PoiItem("wąski nawrót w prawo ", R.drawable.drop));
         mDateSet.add(new PoiItem("wąski nawrót w lewo", R.mipmap.ic_launcher));
         mDateSet.add(new PoiItem("szarpa z lewej", R.mipmap.ic_launcher));
         mDateSet.add(new PoiItem("przeszkoda do przeskoczenia", R.mipmap.ic_launcher));
