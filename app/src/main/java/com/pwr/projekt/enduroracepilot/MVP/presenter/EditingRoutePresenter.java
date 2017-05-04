@@ -11,8 +11,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.pwr.projekt.enduroracepilot.MVP.repository.RouteRepository;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.MapCalculator;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Point;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 /**
  * Created by Sebastian on 2017-04-21.
@@ -36,7 +36,7 @@ public class EditingRoutePresenter {
             marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_flag));
         }
         else {
-            marker.position(latLng).title("point nr").snippet("");
+//            marker.position(latLng).title("point nr").snippet("");
         }
 
         marker.draggable(true);
@@ -60,7 +60,7 @@ public class EditingRoutePresenter {
                 ) {
             MarkerOptions marek = new MarkerOptions();
             marek.position(point.getLatLng());
-            marek.title(point.getPointID() + "");
+//            marek.title(point.getPointID() + "");
 
             googleMap.addMarker(marek);
             if (!options.getPoints().contains(point))
@@ -72,17 +72,39 @@ public class EditingRoutePresenter {
     }
 
     public void addNewPointFromGpsToRoute(LatLng latLng, GoogleMap mGoogleMap, Route route) {
-// checking that the the last added point is in the distance form current latlng for gps
-        double maxDistance = 1.5;
-        if (MapCalculator.getDistanceFromPointToLnglat(route.getPoint(route.getPListSize() - 1), latLng) > maxDistance) {
-            MarkerOptions marker = new MarkerOptions();
-            marker.position(latLng);
+        // checking that the the last added point is in the distance form current latlng for gps
 
-            Point point = new Point(route.getRouteID(), route.getPListSize(), marker);
-            route.getPointsOfRoute().add(point);
-            mGoogleMap.addMarker(marker);
+
+        if (route.getPListSize() == 0) {
+            handleFirstPoint(latLng, mGoogleMap, route);
+
+        }
+        double maxDistance = 2;
+        Point point_ = route.getPoint(route.getPListSize() - 1);
+        double distanceFromPointToLnglat = MapCalculator.getDistanceFromPointToLnglat(point_, latLng);
+
+//        if (route.getPListSize() > 0 && distanceFromPointToLnglat > maxDistance) {
+            handleFirstPoint(latLng, mGoogleMap, route);
             contectThePoinsIntoRoute(mGoogleMap, route);
+//        }
+
+
+
+    }
+
+    private void handleFirstPoint(LatLng latLng, GoogleMap mGoogleMap, Route route) {
+        MarkerOptions marker = new MarkerOptions();
+        marker.position(latLng);
+
+        if (route.getPointsOfRoute().size() == 0) {
+            marker.title("Start");
+            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_flag));
         }
 
+
+
+        Point point = new Point(route.getRouteID(), route.getPListSize(), marker);
+        route.getPointsOfRoute().add(point);
+        mGoogleMap.addMarker(marker);
     }
 }

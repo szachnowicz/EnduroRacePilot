@@ -2,24 +2,40 @@ package com.pwr.projekt.enduroracepilot.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import java.util.Date;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class AddingSingelRouteActivity extends AppCompatActivity {
 
     public static final String ROUTE_ID = "ROUTE_REFERENCE";
-    private TextView routeName;
-    private TextView routeDiscription;
-    private TextView routeAuthor;
+    @BindView(R.id.routeNameTextView)
+    TextView routeName;
+    @BindView(R.id.authorOfRouteEditText)
+    TextView routeDiscription;
+    @BindView(R.id.routeDiscriptionEditText)
+    TextView routeAuthor;
+
+    @BindView(R.id.autorTextInputLayoutASR)
+    TextInputLayout authorTextInputLayout;
+
+    @BindView(R.id.routeDiscTextInputLayoutASR)
+    TextInputLayout routeDiscriptionInputLayout;
+
+    @BindView(R.id.routeTextInputLayoutASR)
+    TextInputLayout routeInputLayout;
 
     private DatabaseReference routeDatabaseReference;
 
@@ -27,13 +43,15 @@ public class AddingSingelRouteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_route);
+        ButterKnife.bind(this);
 
-        routeName = (TextView) findViewById(R.id.routeNameTextView);
-        routeAuthor = (TextView) findViewById(R.id.authorOfRouteEditText);
-        routeDiscription = (TextView) findViewById(R.id.routeDiscriptionEditText);
+//        routeName = (TextView) findViewById(R.id.routeNameTextView);
+//        routeAuthor = (TextView) findViewById(R.id.authorOfRouteEditText);
+//        routeDiscription = (TextView) findViewById(R.id.routeDiscriptionEditText);
 
     }
 
+    @OnClick(R.id.createNewRouteButton)
     public void createRoute(View view) {
 
         if (!checkIfFullFilledForm()) {
@@ -60,12 +78,12 @@ public class AddingSingelRouteActivity extends AppCompatActivity {
     private boolean checkIfFullFilledForm() {
 
         if (routeAuthor.getText().length() < 1) {
-            Toast.makeText(this, "Pole z autore trasy jest puste !", Toast.LENGTH_SHORT).show();
+            authorTextInputLayout.setError("Pole z authorem trasy nie może byc puste! !");
             return false;
         }
 
         if (routeName.getText().length() < 1) {
-            Toast.makeText(this, "Pole z Nazwa trasy jest puste !", Toast.LENGTH_SHORT).show();
+            routeInputLayout.setError("Podaje nazwe trasy");
             return false;
         }
 

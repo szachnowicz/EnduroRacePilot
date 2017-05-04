@@ -11,11 +11,11 @@ import android.support.v7.widget.Toolbar;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.adapters.SectionsPagerAdapter;
 import com.pwr.projekt.enduroracepilot.fragments.RouteDetalisFragment;
-import com.pwr.projekt.enduroracepilot.fragments.RouteDisplayingMapFragment;
+import com.pwr.projekt.enduroracepilot.fragments.map.RouteEditingMapFragment;
 import com.pwr.projekt.enduroracepilot.interfaces.MapDisplayingCallback;
 import com.pwr.projekt.enduroracepilot.interfaces.RouteDetalisCallback;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Point;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,9 +41,7 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), ROUTE_ID_REFERENCE_KEY);
-
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(1);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -54,17 +52,15 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
     @Override
     public void itemOnListCliked(Point point) {
         mViewPager.setCurrentItem(0);
-        RouteDisplayingMapFragment item = (RouteDisplayingMapFragment) mSectionsPagerAdapter.getItem(0);
+        RouteEditingMapFragment item = (RouteEditingMapFragment) mSectionsPagerAdapter.getItem(0);
         item.zoomMapToPoint(point);
     }
 
     @Override
     public void passTheRouteMapFragment(Route route) {
         if (route != null) {
-
-            RouteDisplayingMapFragment item = (RouteDisplayingMapFragment) mSectionsPagerAdapter.getItem(0);
+            RouteEditingMapFragment item = (RouteEditingMapFragment) mSectionsPagerAdapter.getItem(0);
             item.passTheRoute(route);
-
         }
     }
 
@@ -76,7 +72,6 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
 
     @Override
     public void onBackPressed() {
-
         showAsForSaveRouteDialog();
     }
 
@@ -92,7 +87,6 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
                 routeD.saveRoute();
                 finish();
                 dialog.dismiss();
-
             }
         });
         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -102,7 +96,6 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
                 dialog.dismiss();
             }
         });
-
         alert.show();
     }
 }

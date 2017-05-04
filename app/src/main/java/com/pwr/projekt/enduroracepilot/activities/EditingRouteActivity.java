@@ -11,12 +11,14 @@ import android.widget.ProgressBar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.MVP.repository.OnGetDataListener;
+import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.model.Database;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import java.util.ArrayList;
+
+import butterknife.ButterKnife;
 
 public class EditingRouteActivity extends AppCompatActivity {
 
@@ -25,6 +27,7 @@ public class EditingRouteActivity extends AppCompatActivity {
     private ArrayList<Route> routeList;
     private ArrayAdapter<Route> adapter;
     private ProgressBar progressBar;
+    private boolean ride = false;
 
     @Override
     protected void onStart() {
@@ -72,10 +75,21 @@ public class EditingRouteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editing_route);
+
+        Bundle extras = getIntent().getExtras();
+        ButterKnife.bind(this);
+        if (extras != null) {
+            ride = extras.getBoolean("RIDE");
+
+
+        }
         progressBar = (ProgressBar) findViewById(R.id.progressBarRE);
 
         routeList = new ArrayList<>();
-        final Intent creatRoute = new Intent(this, AddingPoiElementsToRouteActivity.class);
+        // this enchatment if changing working on view list
+        final Intent creatRoute = ride ? new Intent(this, RideActivity.class)
+                : new Intent(this, AddingPoiElementsToRouteActivity.class);
+
         createdRouteListview = (ListView) findViewById(R.id.routeEditList);
         adapter = new ArrayAdapter<Route>(this, android.R.layout.simple_list_item_1, routeList);
         createdRouteListview.setAdapter(adapter);
@@ -86,12 +100,10 @@ public class EditingRouteActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
 
                 creatRoute.putExtra(ROUTE_ID, routeList.get(postion).getRouteID());
-
                 startActivity(creatRoute);
 
             }
         });
     }
-
 
 }

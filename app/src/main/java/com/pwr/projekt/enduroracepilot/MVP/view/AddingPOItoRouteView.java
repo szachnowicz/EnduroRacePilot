@@ -6,4 +6,5 @@ package com.pwr.projekt.enduroracepilot.MVP.view;
 
 public interface AddingPOItoRouteView extends RouteView {
 
+     void reDrawMap();
 }

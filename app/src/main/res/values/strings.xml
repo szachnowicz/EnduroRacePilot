@@ -34,4 +34,21 @@
     <string name="authorOfRouteEditTextHintRCF">autor</string>
     <string name="createRouteButtonTextRCF">Stwórz trase</string>
     <string name="showRouteButtonText">Trasy</string>
+    <string name="uskok">Uskok</string>
+    <string name="schody">schody</string>
+    <string name="waskiNawrotLewo">Wąski nawrót w lewo</string>
+    <string name="waskiNawrotPrawo">Wąski nawró w prawo</string>
+    <string name="skarpaZLewej">Skarpa z lewej</string>
+    <string name="skarpazPrawiej">Skarpa z prawej</string>
+    <string name="szuterEndruo">Szuter Enduro</string>
+    <string name="duzeWystromieni">duże wystromienie</string>
+    <string name="szybkoNaOdciku">Szybko na Odciku</string>
+    <string name="uwazaj">Uważaj</string>
+    <string name="showPoint">pokaż punkty</string>
+    <string name="showRoute">pokaż trase</string>
+    <string name="showPoi">pokaż poi</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="addNewRoute">dodaj nową trase</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.pwr.projekt.enduroracepilot.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +10,10 @@ import android.widget.TextView;
 
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.interfaces.AddingPOIFragmentCallback;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.Poi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Sebastian on 2017-04-05.
@@ -19,12 +21,15 @@ import java.util.ArrayList;
 
 public class PoiAdapter extends RecyclerView.Adapter<PoiAdapter.ViewHolder> {
 
-    private ArrayList<PoiItem> poiItems;
+    private Context context;
+    private ArrayList<Poi> poiItems;
     private AddingPOIFragmentCallback onSelectedPOIListener;
 
-    public PoiAdapter(ArrayList<PoiItem> poiItems, AddingPOIFragmentCallback _onSelectedPOIListener) {
-        this.poiItems = poiItems;
+    public PoiAdapter(Poi[] poi, AddingPOIFragmentCallback _onSelectedPOIListener, Context _context ) {
+        poiItems = new ArrayList();
+        this.poiItems.addAll(Arrays.asList(poi));
         onSelectedPOIListener = _onSelectedPOIListener;
+        context = _context;
     }
 
     @Override
@@ -37,13 +42,13 @@ public class PoiAdapter extends RecyclerView.Adapter<PoiAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mTitle.setText(poiItems.get(position).getPoiName());
-        holder.poiImg.setImageResource(poiItems.get(position).getDrawableID());
+        holder.mTitle.setText(poiItems.get(position).getDiscription());
+        holder.poiImg.setImageResource(poiItems.get(position).getDrawable());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                poiItems.get(position).playSound(context);
                 onSelectedPOIListener.onPoiItemChoose(poiItems.get(position));
             }
         });

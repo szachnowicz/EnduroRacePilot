@@ -1,4 +1,6 @@
-package com.pwr.projekt.enduroracepilot.model.MapEntity;
+package com.pwr.projekt.enduroracepilot.model.MapEntity.entity;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +62,12 @@ public class Route {
 
     public void setPoiItemList(List<PoiItem> poiItemList) {
         this.poiItemList = poiItemList;
+    }
+
+    public void addPoi(PoiItem poi) {
+        if (poiItemList != null) {
+            poiItemList.add(poi);
+        }
     }
 
     public String getRouteID() {
@@ -151,7 +159,7 @@ public class Route {
     }
 
     public Point getPoint(int index) {
-        if (pointsOfRoute != null && index <= pointsOfRoute.size()) {
+        if (pointsOfRoute != null && index < pointsOfRoute.size() && index >= 0) {
             return pointsOfRoute.get(index);
         }
         return null;
@@ -159,6 +167,16 @@ public class Route {
 
     public int getPListSize() {
         return pointsOfRoute.size();
+    }
+
+    public List<LatLng> onlyLatLngList() {
+        List<LatLng> list = new ArrayList<>();
+        for (Point p : pointsOfRoute
+                ) {
+            list.add(p.getLatLng());
+        }
+
+        return list;
     }
 }
 

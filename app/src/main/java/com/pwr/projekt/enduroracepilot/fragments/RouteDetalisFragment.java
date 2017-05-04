@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.pwr.projekt.enduroracepilot.MVP.presenter.BrowseRoutePresenter;
 import com.pwr.projekt.enduroracepilot.MVP.view.RouteView;
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.adapters.RoutePointsAdapter;
+import com.pwr.projekt.enduroracepilot.adapters.PointsDetalisAdapter;
 import com.pwr.projekt.enduroracepilot.interfaces.RouteDetalisCallback;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class RouteDetalisFragment extends Fragment implements RouteView {
 
     private String ROUTE_ID_REFERENCE_KEY;
 
-    private RoutePointsAdapter adapter;
+    private PointsDetalisAdapter adapter;
 
     private Route route;
 
@@ -76,7 +76,7 @@ public class RouteDetalisFragment extends Fragment implements RouteView {
         route = new Route();
         browseRoutePresenter = new BrowseRoutePresenter(this);
         browseRoutePresenter.getAllData();
-        adapter = new RoutePointsAdapter(getContext(), route.getPointsOfRoute());
+        adapter = new PointsDetalisAdapter(getContext(), route.getPointsOfRoute());
         pointsListView.setAdapter(adapter);
 
         return view;
@@ -132,7 +132,7 @@ public class RouteDetalisFragment extends Fragment implements RouteView {
             }
         }
 
-        adapter = new RoutePointsAdapter(getContext(), route.getPointsOfRoute());
+        adapter = new PointsDetalisAdapter(getContext(), route.getPointsOfRoute());
         routeDealis.setText(browseRoutePresenter.prepareRouteDetalis(route).toString());
         pointsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();

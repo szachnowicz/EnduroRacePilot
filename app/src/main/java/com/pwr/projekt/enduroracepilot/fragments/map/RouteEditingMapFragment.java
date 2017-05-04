@@ -1,4 +1,4 @@
-package com.pwr.projekt.enduroracepilot.fragments;
+package com.pwr.projekt.enduroracepilot.fragments.map;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,38 +30,28 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.pwr.projekt.enduroracepilot.MVP.presenter.EditingRoutePresenter;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.interfaces.MapDisplayingCallback;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Point;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
-import java.util.ArrayList;
-
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RouteDisplayingMapFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMapClickListener {
+public class RouteEditingMapFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMapClickListener {
 
+    @BindView(R.id.routeAddingMapView)
+    MapView mMapView;
     private View fragmentView;
     private GoogleMap mGoogleMap;
-
-    private MapView mMapView;
-
     private LocationRequest mLocationRequest;
 
     private GoogleApiClient mGoogleApiClient;
 
     private boolean zoomed = false;
 
-    private ArrayList<Point> pointsList;
-    /*****************************************************/
-
-    private String ROUTE_ID_REFERENCE_KEY;
-
-    /*****************************************************/
-
-    private Button trackGPSButton;
     private Boolean trackGps = false;
 
     private ProgressBar progressBar;
@@ -74,14 +63,15 @@ public class RouteDisplayingMapFragment extends Fragment implements OnMapReadyCa
     private Route route;
     private boolean mapIsReady;
     private MapDisplayingCallback mapDisplayingCallback;
+    private String ROUTE_ID_REFERENCE_KEY;
 
-    public RouteDisplayingMapFragment() {
+    public RouteEditingMapFragment() {
 
     }
 
-    public static RouteDisplayingMapFragment newInstance(String _ROUTE_ID_REFERENCE_KEY) {
+    public static RouteEditingMapFragment newInstance(String _ROUTE_ID_REFERENCE_KEY) {
 
-        RouteDisplayingMapFragment fragment = new RouteDisplayingMapFragment();
+        RouteEditingMapFragment fragment = new RouteEditingMapFragment();
         fragment.setRouteRefernce(_ROUTE_ID_REFERENCE_KEY);
         return fragment;
     }
@@ -100,14 +90,13 @@ public class RouteDisplayingMapFragment extends Fragment implements OnMapReadyCa
         route = new Route();
         editingRoutePresenter = new EditingRoutePresenter();
 
-
         return fragmentView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mMapView = (MapView) fragmentView.findViewById(R.id.routeAddingMapView);
+
         if (mMapView != null) {
             mMapView.onCreate(null);
             mMapView.onResume();
@@ -141,11 +130,11 @@ public class RouteDisplayingMapFragment extends Fragment implements OnMapReadyCa
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
 
-
         if (trackGps) {
             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
-            editingRoutePresenter.addNewPointFromGpsToRoute(latLng , mGoogleMap ,route);
+            editingRoutePresenter.addNewPointFromGpsToRoute(latLng, mGoogleMap, route);
+            mapDisplayingCallback.passRouteToDetalisFragment(route);
         }
 
         if (!zoomed) {
@@ -155,18 +144,14 @@ public class RouteDisplayingMapFragment extends Fragment implements OnMapReadyCa
         }
     }
 
-    // TODO przeniesc do presentera
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-        pointsList = new ArrayList<>();
         MapsInitializer.initialize(getContext());
         mGoogleMap = googleMap;
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mGoogleMap.setOnMapClickListener(this);
 //        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(40.123, -64.045)).title("some title").snippet("snipedd"));
-
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -204,7 +189,6 @@ public class RouteDisplayingMapFragment extends Fragment implements OnMapReadyCa
     @Override
     public void onStart() {
         super.onStart();
-//        getAllPointsFromDatabase(Point.TABEL_NAME, ROUTE_ID_REFERENCE_KEY);
     }
 
     @Override

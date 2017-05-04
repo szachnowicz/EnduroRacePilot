@@ -1,6 +1,6 @@
 package com.pwr.projekt.enduroracepilot.MVP.view;
 
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import java.util.List;
 

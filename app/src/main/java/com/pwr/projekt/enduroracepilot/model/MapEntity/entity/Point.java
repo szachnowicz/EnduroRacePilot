@@ -1,4 +1,4 @@
-package com.pwr.projekt.enduroracepilot.model.MapEntity;
+package com.pwr.projekt.enduroracepilot.model.MapEntity.entity;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;

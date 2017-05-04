@@ -1,7 +1,7 @@
 package com.pwr.projekt.enduroracepilot.MVP.repository.impl;
 
 import com.pwr.projekt.enduroracepilot.MVP.view.RouteView;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 public interface RouteRepisotryImpl  extends Repository<Route>
 {

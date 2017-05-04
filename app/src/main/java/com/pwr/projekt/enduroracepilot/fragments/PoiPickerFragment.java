@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.adapters.PoiAdapter;
 import com.pwr.projekt.enduroracepilot.interfaces.AddingPOIFragmentCallback;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.Poi;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,7 +38,8 @@ public class PoiPickerFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new PoiAdapter(PoiItem.createItemsToPicker(), onSelectedPOIListener);
+        mAdapter = new PoiAdapter(Poi.values(), onSelectedPOIListener,
+                                  getActivity().getApplicationContext());
         mRecyclerView.setAdapter(mAdapter);
 
         return view;

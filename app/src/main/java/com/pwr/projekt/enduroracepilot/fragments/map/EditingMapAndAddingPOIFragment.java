@@ -1,4 +1,4 @@
-package com.pwr.projekt.enduroracepilot.fragments;
+package com.pwr.projekt.enduroracepilot.fragments.map;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -25,13 +26,15 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.pwr.projekt.enduroracepilot.MVP.presenter.AddPoiPresenter;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.interfaces.AddingPOIFragmentCallback;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.PoiItem;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Point;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.Poi;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Point;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import java.util.ArrayList;
 
@@ -42,15 +45,16 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks {
+public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMapClickListener {
 
     @BindView(R.id.progressBarPOI)
     ProgressBar progressBar;
     private Route route;
-    private GoogleMap mGoogleMap;
+    private GoogleMap googleMap;
     private MapView mMapView;
     private View mView;
     private MarkerOptions currentFocuseMarker;
+    private Marker currentMarker;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private AddingPOIFragmentCallback poiClickListener;
@@ -82,7 +86,6 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.poi_adding_fragment, container, false);
-
         return mView;
     }
 
@@ -90,41 +93,34 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
 
         currentFocuseMarker = new MarkerOptions();
         currentFocuseMarker.draggable(true);
+        currentFocuseMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
     }
 
     @OnClick(R.id.addPOIFragmentButton)
     public void onClickAddButton(View view) {
-
         poiClickListener.showPoiPicker();
         if (currentFocuseMarker.getPosition() != null) {
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentFocuseMarker.getPosition()));
-            mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
-
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentFocuseMarker.getPosition()));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         }
     }
 
     @OnClick(R.id.buttonNextPOI)
     public void onClickNextButton(View view) {
-
         if (currentPoint < route.getPListSize()) {
-
-            addPoiPresenter.changeFocuse(mGoogleMap, route, ++currentPoint, currentFocuseMarker);
-
+            addPoiPresenter.changeFocuse(googleMap, route, ++currentPoint, currentFocuseMarker);
         }
-
-
     }
 
     @OnClick(R.id.buttonPreviousPOI)
     public void onClickPreviousButton(View view) {
-
         if (currentPoint > 0) {
-            addPoiPresenter.changeFocuse(mGoogleMap, route, --currentPoint, currentFocuseMarker);
+            addPoiPresenter.changeFocuse(googleMap, route, --currentPoint, currentFocuseMarker);
         }
         else
             if (currentPoint == 0) {
-                addPoiPresenter.changeFocuse(mGoogleMap, route, 0, currentFocuseMarker);
+                addPoiPresenter.changeFocuse(googleMap, route, 0, currentFocuseMarker);
             }
 
     }
@@ -150,34 +146,47 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
-        mGoogleMap = googleMap;
-        mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        this.googleMap = googleMap;
+        this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        googleMap.setOnMapClickListener(this);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    getContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
-                mGoogleMap.setMyLocationEnabled(true);
-
+                this.googleMap.setMyLocationEnabled(true);
+            }
+            else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 2);
             }
         }
         else {
             buildGoogleApiClient();
-            mGoogleMap.setMyLocationEnabled(true);
+            this.googleMap.setMyLocationEnabled(true);
         }
         initialisecurrentFocuseMarker();
         if (addPoiPresenter != null) {
-            addPoiPresenter.drawRouteOnMap(googleMap, route);
-            addPoiPresenter.addAllPoiIfExist(googleMap, route);
-            addPoiPresenter.changeFocuse(googleMap, route, currentPoint, currentFocuseMarker);
+            drawRouteOnMap();
+
         }
+        mapIsReady = true;
+    }
+
+
+
+    public void drawRouteOnMap() {
+        addPoiPresenter.drawRouteOnMap(googleMap, route);
+        addPoiPresenter.addAllPoiIfExist(googleMap, route);
 
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        if (!zoom && route != null && currentFocuseMarker != null) {
+            addPoiPresenter.changeFocuse(googleMap, route, currentPoint, currentFocuseMarker);
+            zoom = !zoom;
+            currentFocuseMarker.position(new LatLng(location.getLatitude(), location.getLongitude()));
+            currentMarker = googleMap.addMarker(currentFocuseMarker);
+        }
 
     }
 
@@ -209,16 +218,29 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
 
     }
 
-    public void addPoiItemToMap(PoiItem poiItem) {
-        currentFocuseMarker.icon(BitmapDescriptorFactory.fromResource(poiItem.getDrawableID()));
-        currentFocuseMarker.title(poiItem.getPoiName());
-        mGoogleMap.addMarker(currentFocuseMarker);
-
+    public void addPoiItemToMap(Poi poiItem) {
+        addPoiPresenter.addPoiToMap(poiItem, googleMap, route, currentFocuseMarker);
     }
 
     public void setRouteFromActivityLevel(Route routeFromActivityLevel, AddPoiPresenter addPoiPresenter) {
         this.route = routeFromActivityLevel;
         this.addPoiPresenter = addPoiPresenter;
         progressBar.setVisibility(View.GONE);
+
+        if (mapIsReady) {
+            drawRouteOnMap();
+        }
+    }
+
+    public void saveRoute() {
+        addPoiPresenter.saveRoute(route);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+
+        currentMarker.setPosition(latLng);
+        currentFocuseMarker.position(latLng);
+
     }
 }

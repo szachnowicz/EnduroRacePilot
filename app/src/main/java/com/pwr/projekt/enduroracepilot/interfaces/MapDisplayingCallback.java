@@ -1,7 +1,7 @@
 package com.pwr.projekt.enduroracepilot.interfaces;
 
 
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 /**
  * Created by Sebastian on 2017-04-22.

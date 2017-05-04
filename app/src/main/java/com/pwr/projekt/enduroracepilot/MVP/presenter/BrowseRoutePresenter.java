@@ -3,7 +3,7 @@ package com.pwr.projekt.enduroracepilot.MVP.presenter;
 import com.pwr.projekt.enduroracepilot.MVP.repository.RouteRepository;
 import com.pwr.projekt.enduroracepilot.MVP.view.RouteView;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.MapCalculator;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 /**
  * Created by Sebastian on 2017-04-20.

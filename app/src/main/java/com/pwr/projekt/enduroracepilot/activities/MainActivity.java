@@ -1,4 +1,4 @@
-package com.pwr.projekt.enduroracepilot;
+package com.pwr.projekt.enduroracepilot.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,27 +7,20 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.pwr.projekt.enduroracepilot.activities.AddingSingelRouteActivity;
-import com.pwr.projekt.enduroracepilot.activities.BrowseRouteActivity;
-import com.pwr.projekt.enduroracepilot.activities.EditingRouteActivity;
+import com.pwr.projekt.enduroracepilot.R;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ButterKnife.bind(this);
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-
-
+        ;
     }
 
     public void showRoute(View view) {
@@ -36,14 +29,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void goToCreateRouteActivity(View view) {
-        Intent mapActivity = new Intent(this, AddingSingelRouteActivity.class);
+
+
+    public void goToMapFragmentActivity(View view) {
+        Intent mapActivity = new Intent(this, EditingRouteActivity.class);
         startActivity(mapActivity);
 
     }
 
-    public void goToMapFragmentActivity(View view) {
+    @OnClick(R.id.rideButton)
+    public void goToRideActivity(View view) {
+
         Intent mapActivity = new Intent(this, EditingRouteActivity.class);
+        mapActivity.putExtra("RIDE", true);
         startActivity(mapActivity);
 
     }

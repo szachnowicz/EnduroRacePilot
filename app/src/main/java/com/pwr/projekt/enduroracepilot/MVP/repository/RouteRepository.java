@@ -5,7 +5,7 @@ import com.google.firebase.database.DatabaseError;
 import com.pwr.projekt.enduroracepilot.MVP.repository.impl.RouteRepisotryImpl;
 import com.pwr.projekt.enduroracepilot.MVP.view.RouteView;
 import com.pwr.projekt.enduroracepilot.model.Database;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;

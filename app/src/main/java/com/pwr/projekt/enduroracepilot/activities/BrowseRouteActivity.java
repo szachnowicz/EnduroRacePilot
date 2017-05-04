@@ -14,13 +14,14 @@ import android.widget.ProgressBar;
 import com.pwr.projekt.enduroracepilot.MVP.presenter.BrowseRoutePresenter;
 import com.pwr.projekt.enduroracepilot.MVP.view.BrowseRouteView;
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Route;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 
@@ -45,10 +46,11 @@ public class BrowseRouteActivity extends AppCompatActivity implements BrowseRout
         setContentView(R.layout.activity_created_routes);
 
         ButterKnife.bind(this);
+
         browseRoutePresenter = new BrowseRoutePresenter(this);
         browseRoutePresenter.getAllData();
-        setUpGuiStaff();
 
+        setUpGuiStaff();
     }
 
     private void setUpGuiStaff() {
@@ -62,14 +64,19 @@ public class BrowseRouteActivity extends AppCompatActivity implements BrowseRout
 
         return createDeleteRouteDialog(position);
     }
+    @OnClick(R.id.addNewRouteButton)
+    public void addNewRoute(View view)
+    {
+
+        Intent mapActivity = new Intent(this, AddingSingelRouteActivity.class);
+        startActivity(mapActivity);
+    }
 
     @OnItemClick(R.id.routeListARA)
     public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
         final Intent creatRoute = new Intent(this, RouteCreatingActivity.class);
         creatRoute.putExtra(ROUTE_ID, routeList.get(postion).getRouteID());
-
         startActivity(creatRoute);
-
     }
 
     @Override

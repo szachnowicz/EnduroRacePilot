@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:myapp="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/showPoin"
+          android:icon="@android:drawable/ic_menu_add"
+          android:title="@string/showPoint"
+          myapp:showAsAction="ifRoom" />
+    <item android:id="@+id/showPath"
+          android:icon="@android:drawable/ic_menu_add"
+          android:title="@string/showRoute"
+          myapp:showAsAction="ifRoom" />
+    <item android:id="@+id/showPOI"
+          android:icon="@android:drawable/ic_menu_add"
+          android:title="@string/showPoi"
+          myapp:showAsAction="ifRoom" />
+</menu>

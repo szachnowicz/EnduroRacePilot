@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pwr.projekt.enduroracepilot.fragments.EditingMapAndAddingPOIFragment">
+    tools:context="com.pwr.projekt.enduroracepilot.fragments.map.EditingMapAndAddingPOIFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <Button
         android:id="@+id/addPOIFragmentButton"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
@@ -37,6 +38,7 @@
 
     <Button
         android:id="@+id/buttonNextPOI"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
@@ -53,6 +55,7 @@
 
     <Button
         android:id="@+id/buttonPreviousPOI"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|left"
