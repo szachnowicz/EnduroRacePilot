@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
+import com.pwr.projekt.enduroracepilot.model.SharedPref;
 
 import java.util.Date;
 
@@ -38,12 +39,14 @@ public class AddingSingelRouteActivity extends AppCompatActivity {
     TextInputLayout routeInputLayout;
 
     private DatabaseReference routeDatabaseReference;
+    private SharedPref sharePref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_route);
         ButterKnife.bind(this);
+        sharePref = new SharedPref(getApplicationContext());
 
 //        routeName = (TextView) findViewById(R.id.routeNameTextView);
 //        routeAuthor = (TextView) findViewById(R.id.authorOfRouteEditText);
@@ -63,7 +66,7 @@ public class AddingSingelRouteActivity extends AppCompatActivity {
         Route route = new Route();
         route.setRouteID(routeID);
         route.setRouteName(routeName.getText().toString());
-        route.setAuthor(routeAuthor.getText().toString());
+        route.setAuthor(sharePref.getUserId());
         route.setRouteDiscription(routeDiscription.getText().toString());
         route.setDate(new Date());
 
@@ -77,10 +80,10 @@ public class AddingSingelRouteActivity extends AppCompatActivity {
 
     private boolean checkIfFullFilledForm() {
 
-        if (routeAuthor.getText().length() < 1) {
-            authorTextInputLayout.setError("Pole z authorem trasy nie może byc puste! !");
-            return false;
-        }
+//        if (routeAuthor.getText().length() < 1) {
+//            authorTextInputLayout.setError("Pole z authorem trasy nie może byc puste! !");
+//            return false;
+//        }
 
         if (routeName.getText().length() < 1) {
             routeInputLayout.setError("Podaje nazwe trasy");

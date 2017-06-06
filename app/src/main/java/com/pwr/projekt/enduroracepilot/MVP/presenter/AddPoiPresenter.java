@@ -17,6 +17,8 @@ import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.PoiItem;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Point;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
 
+import java.util.HashSet;
+
 /**
  * Created by Sebastian on 2017-04-23.
  */
@@ -28,10 +30,12 @@ public class AddPoiPresenter {
     private boolean showPath = true;
     private boolean showPoins = true;
     private boolean showPOI = true;
+    private HashSet<Marker> addedPoiList = new HashSet<>();
 
     public AddPoiPresenter(AddingPOItoRouteView browseRouteView) {
         this.browseRouteView = browseRouteView;
         routeRepository = new RouteRepository();
+
     }
 
     public void getRoute(String routeID) {
@@ -48,7 +52,7 @@ public class AddPoiPresenter {
                 ) {
             MarkerOptions marek = new MarkerOptions();
             marek.position(point.getLatLng());
-            marek.title(point.getPointID() + "");
+            marek.title("");
             if (showPoins) {
                 googleMap.addMarker(marek);
             }
@@ -66,21 +70,20 @@ public class AddPoiPresenter {
         for (PoiItem item : route.getPoiItemList()
                 ) {
             MarkerOptions marker = new MarkerOptions();
-            marker.draggable(true);
+//            marker.draggable(true);
+
             marker.position(item.getLatLng());
-            marker.title(item.getDiscription());
+            marker.title(item.getPoi().name());
             marker.icon(BitmapDescriptorFactory.fromResource(item.getPoi().getDrawable()));
             if (showPOI) {
-                googleMap.addMarker(marker);
+                addedPoiList.add(googleMap.addMarker(marker));
+
             }
         }
         addOnPoiClickListener(googleMap);
     }
 
     private void addOnPoiClickListener(GoogleMap googleMap) {
-
-
-
 
     }
 
@@ -97,11 +100,20 @@ public class AddPoiPresenter {
     public void addPoiToMap(Poi poi, GoogleMap mGoogleMap, Route route, MarkerOptions currentFocuseMarker) {
 
         PoiItem poiPoint = new PoiItem(route.getRouteID(), route.getPoiItemList().size(), currentFocuseMarker, poi);
+
+        for (PoiItem poiX:
+             route.getPoiItemList()) {
+            if(poiX.getLatLng().equals(currentFocuseMarker.getPosition()))
+            {
+                route.getPoiItemList().remove(poiX);
+            }
+        }
         route.addPoi(poiPoint);
+
         currentFocuseMarker.icon(BitmapDescriptorFactory.fromResource(poi.getDrawable()));
         currentFocuseMarker.title(String.valueOf(poi.getDiscription()));
         mGoogleMap.addMarker(currentFocuseMarker);
-
+        browseRouteView.reDrawMap();
     }
 
     public void saveRoute(Route route) {
@@ -122,4 +134,5 @@ public class AddPoiPresenter {
         showPoins = !showPoins;
         browseRouteView.reDrawMap();
     }
+
 }

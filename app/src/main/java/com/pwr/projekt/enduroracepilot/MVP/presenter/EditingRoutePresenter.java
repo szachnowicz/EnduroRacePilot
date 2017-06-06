@@ -62,7 +62,7 @@ public class EditingRoutePresenter {
             marek.position(point.getLatLng());
 //            marek.title(point.getPointID() + "");
 
-            googleMap.addMarker(marek);
+        //    googleMap.addMarker(marek);
             if (!options.getPoints().contains(point))
                 options.add(point.getLatLng());
         }

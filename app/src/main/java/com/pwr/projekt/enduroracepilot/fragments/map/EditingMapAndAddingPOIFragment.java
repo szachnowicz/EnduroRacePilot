@@ -3,10 +3,15 @@ package com.pwr.projekt.enduroracepilot.fragments.map;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -14,7 +19,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -33,9 +41,12 @@ import com.pwr.projekt.enduroracepilot.MVP.presenter.AddPoiPresenter;
 import com.pwr.projekt.enduroracepilot.R;
 import com.pwr.projekt.enduroracepilot.interfaces.AddingPOIFragmentCallback;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.Poi;
+import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.PoiItem;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Point;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
+import com.pwr.projekt.enduroracepilot.model.SharedPref;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -47,8 +58,10 @@ import butterknife.OnClick;
  */
 public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapReadyCallback, LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMapClickListener {
 
+    private final int REQUEST_IMAGE_CAPTURE = 999;
     @BindView(R.id.progressBarPOI)
     ProgressBar progressBar;
+    String mCurrentPhotoPath;
     private Route route;
     private GoogleMap googleMap;
     private MapView mMapView;
@@ -60,10 +73,11 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
     private AddingPOIFragmentCallback poiClickListener;
     private ArrayList<Point> pointsList;
     private int currentPoint = 0;
-
     private boolean zoom = false;
     private boolean mapIsReady = false;
     private AddPoiPresenter addPoiPresenter;
+    private SharedPref sharedPref;
+    private int idOfPoiForWitchPictureIsTaken = -1;
 
     public EditingMapAndAddingPOIFragment() {
 
@@ -79,6 +93,7 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
+        sharedPref = new SharedPref(getContext());
 
     }
 
@@ -166,12 +181,97 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
         initialisecurrentFocuseMarker();
         if (addPoiPresenter != null) {
             drawRouteOnMap();
-
         }
+
         mapIsReady = true;
+        if (mapIsReady) {
+            setUpPoiInfoWindow();
+            setOnPoiInfoClickListener();
+        }
+
     }
 
+    private void setOnPoiInfoClickListener() {
 
+        if (googleMap != null) {
+
+            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    LatLng latLng = marker.getPosition();
+
+                    for (PoiItem poiItem :
+                            route.getPoiItemList()) {
+                        if (poiItem.getLatLng().equals(latLng)) {
+                            takeAndSavePoiPicture(marker, poiItem);
+                            break;
+                        }
+                    }
+
+                }
+            });
+
+        }
+
+    }
+
+    private void takeAndSavePoiPicture(Marker marker, PoiItem poiItem) {
+
+        File direct = new File(Environment.getExternalStorageDirectory() + "/EndruoRace/PoiPhoto/" + route.getRouteDiscription());
+        if (!direct.exists()) {
+            direct.mkdir();
+        }
+
+        File file = new File(direct, poiItem.getPointID() + "Poi.png");
+        Uri imageUri = Uri.fromFile(file);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        sharedPref.savePhotoPath(route,marker,file.getAbsolutePath());
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+
+    }
+
+    private void setUpPoiInfoWindow() {
+
+        if (googleMap != null) {
+
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    if (marker.getTitle().equals(""))
+                        return null;
+                    View view = getLayoutInflater(getArguments()).inflate(R.layout.poi_marek_window, null);
+                    view.setLayoutParams(new LinearLayout.LayoutParams(800, 400));
+                    TextView textView = (TextView) view.findViewById(R.id.textViewPoiWindow);
+                    ImageView imageView = (ImageView) view.findViewById(R.id.imageViewPoiWindow);
+                    textView.setText(marker.getTitle().toString());
+                    LatLng latLng = marker.getPosition();
+                    String pathToFile = null;
+                    for (PoiItem poiItem :
+                            route.getPoiItemList()) {
+                        if (poiItem.getLatLng().equals(latLng)) {
+                            pathToFile = sharedPref.getSavePhotoPath(route,marker);
+                        }
+                    }
+
+                    if (pathToFile != null && new File(pathToFile).exists()) {
+
+                        imageView.setImageBitmap(BitmapFactory.decodeFile(pathToFile));
+
+                    }
+                    return view;
+                }
+            });
+
+        }
+
+    }
 
     public void drawRouteOnMap() {
         addPoiPresenter.drawRouteOnMap(googleMap, route);
@@ -238,9 +338,8 @@ public class EditingMapAndAddingPOIFragment extends Fragment implements OnMapRea
 
     @Override
     public void onMapClick(LatLng latLng) {
-
         currentMarker.setPosition(latLng);
         currentFocuseMarker.position(latLng);
-
     }
+
 }

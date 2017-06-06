@@ -37,8 +37,7 @@ public class PointsDetalisAdapter extends ArrayAdapter<Point> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.points_list_view_adapter, parent, false);
         textView = (TextView) rowView.findViewById(R.id.PRTextView);
         imageView = (ImageView) rowView.findViewById(R.id.RPImageView);

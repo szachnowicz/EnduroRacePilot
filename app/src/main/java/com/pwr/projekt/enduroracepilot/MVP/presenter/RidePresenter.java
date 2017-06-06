@@ -3,7 +3,6 @@ package com.pwr.projekt.enduroracepilot.MVP.presenter;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -11,6 +10,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -19,7 +20,6 @@ import com.google.maps.android.PolyUtil;
 import com.pwr.projekt.enduroracepilot.MVP.repository.RouteRepository;
 import com.pwr.projekt.enduroracepilot.MVP.view.RouteView;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.MapCalculator;
-import com.pwr.projekt.enduroracepilot.model.MapEntity.Poi;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.PoiItem;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Point;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
@@ -36,23 +36,49 @@ public class RidePresenter {
     private RouteView browseRouteView;
     private Route route;
     private List<LatLng> routeLine;
+    private double poiDetectionDistance = 10;
+    private double distanceToPath = 10;
+    private long lastTimePoiSoundPlayed;
+    private Circle circlePoi;
+    private Circle circleRoute;
+    private boolean showCirclePoi, showCirclePath;
 
     public RidePresenter(RouteView browseRouteView) {
         this.browseRouteView = browseRouteView;
         routeRepository = new RouteRepository();
+        lastTimePoiSoundPlayed = System.currentTimeMillis();
     }
 
-    public Route getRoute() {
-        return route;
-    }
+    public void drawCircleOnMap(GoogleMap map, LatLng currentLatLng) {
 
-    public void setRoute(Route route) {
-        this.route = route;
-        routeLine = route.onlyLatLngList();
-    }
+        if (circlePoi == null) {
+            circlePoi = map.addCircle(new CircleOptions()
+                                              .center(currentLatLng)
+                                              .fillColor(Color.argb(10, 255, 15, 40))
+                                              .strokeColor(Color.argb(50, 255, 15, 40))
+                                              .strokeWidth(5)
+                                              .zIndex(1));
+        }
+        else {
+            circlePoi.setVisible(showCirclePoi);
 
-    public void getRoute(String routeID) {
-        routeRepository.getSingleRoute(routeID, browseRouteView);
+            circlePoi.setCenter(currentLatLng);
+            circlePoi.setRadius(poiDetectionDistance);
+        }
+
+        if (circleRoute == null) {
+            circleRoute = map.addCircle(new CircleOptions()
+                                                .center(currentLatLng)
+                                                .radius(distanceToPath)
+                                                .strokeColor(Color.GREEN)
+                                                .strokeWidth(5));
+        }
+        else {
+            circleRoute.setVisible(showCirclePath);
+            circleRoute.setCenter(currentLatLng);
+            circleRoute.setRadius(distanceToPath);
+        }
+
     }
 
     public void drawRouteOnMap(GoogleMap googleMap) {
@@ -194,7 +220,7 @@ public class RidePresenter {
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if (isLocationOnRoute(latLng, 10)) {
+        if (isLocationOnRoute(latLng, distanceToPath)) {
             PoiItem poi = findClosestPoi(latLng);
             double distane = MapCalculator.getDistanceFromPointToLnglat(poi, latLng) * 100;
 
@@ -209,13 +235,16 @@ public class RidePresenter {
 
     public void checkIfNerbayPoi(LatLng latLng, Context context) {
 
-        if (isLocationOnRoute(latLng, 10)) {
+        if (isLocationOnRoute(latLng, distanceToPath)) {
             PoiItem poi = findClosestPoi(latLng);
             double distane = MapCalculator.getDistanceFromPointToLnglat(poi, latLng) * 100;
 
-//            Toast.makeText(context, poi.getPoi() + " dystans :" + distane + "m", Toast.LENGTH_SHORT).show();
-            if (distane < 10) {
+            if (distane < poiDetectionDistance &&
+                    (System.currentTimeMillis() - lastTimePoiSoundPlayed) > 2000) {
+
                 poi.getPoi().playSound(context);
+                lastTimePoiSoundPlayed = System.currentTimeMillis();
+
             }
 
         }
@@ -231,9 +260,7 @@ public class RidePresenter {
 
         double result = 0;
         double closestResult = 1000;
-        for (Point item : route.getPointsOfRoute()
-                ) {
-
+        for (Point item : route.getPointsOfRoute()) {
             result = MapCalculator.getDistanceFromPointToLnglat(item, latLng);
             if (result < closestResult) {
                 closestResult = result;
@@ -267,15 +294,55 @@ public class RidePresenter {
     }
 
     public void showInfoAndPlaySound(LatLng postionLatLng, GoogleMap googleMap, View view) {
-        if (isLocationOnRoute(postionLatLng, 10.0)) {
+        if (isLocationOnRoute(postionLatLng, poiDetectionDistance)) {
+
             int closestPoint = findClosestPoint(postionLatLng);
-            updateCameraBering(googleMap, closestPoint +1 , postionLatLng);
+
+            updateCameraBering(googleMap, closestPoint + 1, postionLatLng);
 
             int closestPoi = findClosestPoiIndex(postionLatLng);
+
             PoiItem poiItem = route.getPoiItemList().get(closestPoi);
+
             double distane = MapCalculator.getDistanceFromPointToLnglat(poiItem, postionLatLng) * 100;
-            checkIfNerbayPoi(postionLatLng,view.getContext());
-            Snackbar.make(view,"Najbliższy POI "+ poiItem.getPoi() +" za " + distane +" m ",Snackbar.LENGTH_SHORT ).show();
+
+            checkIfNerbayPoi(postionLatLng, view.getContext());
+
         }
     }
+
+    public double getPoiDetectionDistance() {
+        return poiDetectionDistance;
+    }
+
+    public void setPoiDetectionDistance(double poiDetectionDistance) {
+        this.poiDetectionDistance = poiDetectionDistance;
+    }
+
+    public void setDistanceToPath(double distanceToPath) {
+        this.distanceToPath = distanceToPath;
+
+    }
+
+    public void setShowCirclePoi(boolean showCirclePoi) {
+        this.showCirclePoi = showCirclePoi;
+    }
+
+    public void setShowCirclePath(boolean showPathPoi) {
+        this.showCirclePath = showPathPoi;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+        routeLine = route.onlyLatLngList();
+    }
+
+    public void getRoute(String routeID) {
+        routeRepository.getSingleRoute(routeID, browseRouteView);
+    }
+
 }

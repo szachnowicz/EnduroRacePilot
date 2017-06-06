@@ -51,4 +51,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="addNewRoute">dodaj nową trase</string>
+    <string name="distanceToPoi">Odległośc informawania o POI</string>
+    <string name="gpsRefreshFrequency">Częstotliwość odswierzania gps</string>
+    <string name="sharedRoute"> Udostępnione trasy</string>
+    <string name="myRoute">Moje trasy</string>
 </resources>

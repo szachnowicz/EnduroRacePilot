@@ -2,6 +2,7 @@ package com.pwr.projekt.enduroracepilot.model.MapEntity.entity;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -90,8 +91,9 @@ public class Route {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         sb.append("Nazwa trasy : ").append(routeName).append("\n");
-        sb.append("Data utworzenia : " + date).append('\n');
+        sb.append("Data utworzenia : " + formatter.format(date)).append('\n');
         sb.append("Autor : ").append(author).append('\n');
         sb.append("Opis trasy : ").append(routeDiscription).append('\n');
 

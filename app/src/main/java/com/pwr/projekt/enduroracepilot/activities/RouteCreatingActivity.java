@@ -1,6 +1,7 @@
 package com.pwr.projekt.enduroracepilot.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -77,6 +78,11 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
 
     private void showAsForSaveRouteDialog() {
 
+        final Intent intent = new Intent(this, AddingPoiElementsToRouteActivity.class);
+
+        final Intent goToMainActivity = new Intent(this, MainActivity.class);
+        goToMainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Save route");
         alert.setMessage("Would you like to sava the route ?");
@@ -85,7 +91,7 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
             public void onClick(DialogInterface dialog, int which) {
                 RouteDetalisFragment routeD = (RouteDetalisFragment) mSectionsPagerAdapter.getItem(1);
                 routeD.saveRoute();
-                finish();
+                startActivity(goToMainActivity);
                 dialog.dismiss();
             }
         });
@@ -94,6 +100,17 @@ public class RouteCreatingActivity extends AppCompatActivity implements RouteDet
             public void onClick(DialogInterface dialog, int which) {
                 finish();
                 dialog.dismiss();
+
+            }
+        });
+        alert.setNeutralButton("Dodwanie POI", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                RouteDetalisFragment routeD = (RouteDetalisFragment) mSectionsPagerAdapter.getItem(1);
+                routeD.saveRoute();
+                intent.putExtra(ChooseRouteActivity.ROUTE_ID, ROUTE_ID_REFERENCE_KEY);
+                startActivity(intent);
+
             }
         });
         alert.show();

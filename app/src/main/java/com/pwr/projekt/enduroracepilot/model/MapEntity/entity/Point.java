@@ -34,7 +34,7 @@ public class Point {
         this.pointID = pointID;
         this.lat = markerOptions.getPosition().latitude;
         this.lng = markerOptions.getPosition().longitude;
-        this.discription = markerOptions.getTitle();
+        //  this.discription = markerOptions.getTitle();
 
     }
 

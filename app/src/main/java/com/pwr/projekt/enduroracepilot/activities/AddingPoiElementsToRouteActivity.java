@@ -1,6 +1,7 @@
 package com.pwr.projekt.enduroracepilot.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,8 +19,8 @@ import android.widget.Toast;
 import com.pwr.projekt.enduroracepilot.MVP.presenter.AddPoiPresenter;
 import com.pwr.projekt.enduroracepilot.MVP.view.AddingPOItoRouteView;
 import com.pwr.projekt.enduroracepilot.R;
-import com.pwr.projekt.enduroracepilot.fragments.map.EditingMapAndAddingPOIFragment;
 import com.pwr.projekt.enduroracepilot.fragments.PoiPickerFragment;
+import com.pwr.projekt.enduroracepilot.fragments.map.EditingMapAndAddingPOIFragment;
 import com.pwr.projekt.enduroracepilot.interfaces.AddingPOIFragmentCallback;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.Poi;
 import com.pwr.projekt.enduroracepilot.model.MapEntity.entity.Route;
@@ -67,7 +68,7 @@ public class AddingPoiElementsToRouteActivity extends AppCompatActivity implemen
         addPoiPresenter.getRoute(ROUTE_ID_REFERENCE_KEY);
 
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle(null);
     }
 
     @Override
@@ -176,6 +177,8 @@ public class AddingPoiElementsToRouteActivity extends AppCompatActivity implemen
 
     private void showAsForSaveRouteDialog() {
 
+        final Intent goToMainActivity = new Intent(this, MainActivity.class);
+        goToMainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Save route");
         alert.setMessage("Would you like to sava the route ?");
@@ -184,7 +187,8 @@ public class AddingPoiElementsToRouteActivity extends AppCompatActivity implemen
             public void onClick(DialogInterface dialog, int which) {
 
                 mapFragmentPOI.saveRoute();
-                finish();
+                startActivity(goToMainActivity);
+              //  finish();
                 dialog.dismiss();
 
             }
@@ -192,7 +196,8 @@ public class AddingPoiElementsToRouteActivity extends AppCompatActivity implemen
         alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
+                startActivity(goToMainActivity);
+                //finish();
                 dialog.dismiss();
             }
         });
